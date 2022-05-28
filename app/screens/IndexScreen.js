@@ -1,14 +1,36 @@
 import React from "react";
-import { Image, View, StyleSheet, Text } from "react-native";
+import {
+  Image,
+  View,
+  StyleSheet,
+  Text,
+  Dimensions,
+  Button,
+  SafeAreaView,
+} from "react-native";
+import { TouchableOpacity } from "react-native";
 
-function IndexScreen(props) {
+const loggedIn = true;
+
+function IndexScreen({ navigation }) {
   return (
-    <View style={styles.background}>
+    <SafeAreaView style={styles.background}>
       <View style={styles.logoContainer}>
         <Image source={require("../assets/favicon.png")} style={styles.logo} />
         <Text style={styles.logoName}>SurveyEm</Text>
       </View>
-    </View>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() =>
+          // loggedIn
+          //   ? navigation.navigate("HomeScreen")
+          //   : navigation.navigate("RegisterParticulars")
+          navigation.navigate("RegisterParticulars")
+        }
+      >
+        <Text style={styles.buttonText}>Get Started</Text>
+      </TouchableOpacity>
+    </SafeAreaView>
   );
 }
 
@@ -16,7 +38,7 @@ const styles = StyleSheet.create({
   background: {
     flex: 1,
     backgroundColor: "lightblue",
-    justifyContent: "center",
+    justifyContent: "flex-end",
     alignItems: "center",
   },
   logo: {
@@ -25,10 +47,20 @@ const styles = StyleSheet.create({
   },
   logoName: {
     fontSize: 20,
-    letterSpacing: 1.5,
+    letterSpacing: 1,
   },
   logoContainer: {
-    bottom: 80,
+    bottom: "50%",
+  },
+  button: {
+    height: 80,
+    width: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "white",
+  },
+  buttonText: {
+    fontSize: 25,
   },
 });
 
