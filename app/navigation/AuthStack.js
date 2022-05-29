@@ -3,6 +3,8 @@ import { createStackNavigator } from "@react-navigation/stack";
 
 import IndexScreen from "../screens/IndexScreen";
 import RegisterParticularsScreen from "../screens/RegisterParticularsScreen";
+import LoginScreen from "../screens/LoginScreen";
+import AppStack from "./AppStack";
 
 const Stack = createStackNavigator();
 
@@ -14,10 +16,8 @@ function AuthStack({ navigation }) {
     >
       <Stack.Screen name="Index" component={IndexScreen} />
       {/* Login screen options headerBackVisible:false */}
-      <Stack.Screen
-        name="RegisterParticulars"
-        component={RegisterParticularsScreen}
-      />
+      <Stack.Screen name="Login" component={LoginScreen} />
+      <Stack.Screen name="Home3" component={AppStack} />
     </Stack.Navigator>
   );
 }

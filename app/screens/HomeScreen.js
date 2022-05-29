@@ -1,5 +1,11 @@
 import React from "react";
-import { SafeAreaView, Text, ScrollView } from "react-native";
+import {
+  SafeAreaView,
+  Text,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+} from "react-native";
 import { View } from "react-native";
 
 import { homeFeedData } from "../model/data";
@@ -27,3 +33,34 @@ function HomeScreen({ navigator }) {
 }
 
 export default HomeScreen;
+
+//   return (
+//     <View style={styles.container}>
+//       <Text>Email: </Text>
+//       <TouchableOpacity onPress={handleSignOut} style={styles.button}>
+//         <Text style={styles.buttonText}>Sign Out</Text>
+//       </TouchableOpacity>
+//     </View>
+//   );
+// };
+
+// const styles = StyleSheet.create({
+//   buttonText: {
+//     color: "white",
+//     fontWeight: "700",
+//     fontSize: 16,
+//   },
+//   container: {
+//     flex: 1,
+//     justifyContent: "center",
+//     alignItems: "center",
+//   },
+//   button: {
+//     backgroundColor: "#0782F9",
+//     width: "60%",
+//     padding: 15,
+//     borderRadius: 10,
+//     alignItems: "center",
+//     marginTop: 40,
+//   },
+// });

@@ -25,7 +25,7 @@ function IndexScreen({ navigation }) {
           // loggedIn
           //   ? navigation.navigate("HomeScreen")
           //   : navigation.navigate("RegisterParticulars")
-          navigation.navigate("RegisterParticulars")
+          navigation.navigate("Login")
         }
       >
         <Text style={styles.buttonText}>Get Started</Text>
