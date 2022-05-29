@@ -1,7 +1,8 @@
 import React from "react";
+import { Text } from "react-native";
 
-function CreateScreen(props) {
-  return <div></div>;
+function CreateScreen({ navigation }) {
+  return <Text>Create Screen</Text>;
 }
 
 export default CreateScreen;
