@@ -10,11 +10,7 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/core";
 
-import {
-  createUserWithEmailAndPassword,
-  onAuthStateChanged,
-  signInWithEmailAndPassword,
-} from "firebase/auth";
+import { onAuthStateChanged, signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../firebase";
 
 const LoginScreen = () => {
