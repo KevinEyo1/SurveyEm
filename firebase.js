@@ -1,6 +1,7 @@
 // Import the functions you need from the SDKs you need
-import { initializeApp } from 'firebase/app';
-import { getAuth } from 'firebase/auth';
+import { initializeApp } from "firebase/app";
+import { getAuth } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -11,9 +12,9 @@ const firebaseConfig = {
   projectId: "surveyem-ad0cf",
   storageBucket: "surveyem-ad0cf.appspot.com",
   messagingSenderId: "112444130464",
-  appId: "1:112444130464:web:2282776a3f75796019f5c5"
+  appId: "1:112444130464:web:2282776a3f75796019f5c5",
 };
 
 // Initialize Firebase
-initializeApp(firebaseConfig);
+const app = initializeApp(firebaseConfig);
 export const auth = getAuth();
