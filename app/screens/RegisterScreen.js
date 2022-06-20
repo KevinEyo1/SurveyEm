@@ -10,12 +10,18 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/core";
 
-import { onAuthStateChanged, signInWithEmailAndPassword } from "firebase/auth";
+import {
+  onAuthStateChanged,
+  createUserWithEmailAndPassword,
+} from "firebase/auth";
 import { auth } from "../../firebase";
 
-const LoginScreen = () => {
+const RegisterScreen = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [occupation, setOccupation] = useState("");
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -29,24 +35,45 @@ const LoginScreen = () => {
   }, []);
 
   const handleSignUp = () => {
-    navigation.replace("Register");
-  };
-
-  const handleLogin = () => {
-    signInWithEmailAndPassword(auth, email, password)
+    createUserWithEmailAndPassword(auth, email, password)
       .then((userCredentials) => {
         const user = userCredentials.user;
-        console.log("Logged in with: ", user.email);
+        console.log("Registered with: ", user.email);
       })
       .catch((error) => alert(error.message));
   };
 
+  const toLogin = () => {
+    navigation.replace("Login");
+  };
+
   return (
     <KeyboardAvoidingView style={styles.container} behaviour="padding">
-      <View>
-        <Image source={require("../assets/favicon.png")} style={styles.logo} />
-        <Text style={styles.logoName}>SurveyEm</Text>
+      <View style={styles.nameField}>
+        <TextInput
+          placeholder="First Name"
+          value={firstName}
+          onChangeText={(text) => setFirstName(text)}
+          style={styles.firstName}
+        />
+
+        <TextInput
+          placeholder="Last Name"
+          value={lastName}
+          onChangeText={(text) => setLastName(text)}
+          style={styles.lastName}
+        />
       </View>
+
+      <View style={styles.inputContainer}>
+        <TextInput
+          placeholder="Occupation"
+          value={occupation}
+          onChangeText={(text) => setOccupation(text)}
+          style={styles.input}
+        />
+      </View>
+
       <View style={styles.inputContainer}>
         <TextInput
           placeholder="Email"
@@ -55,6 +82,7 @@ const LoginScreen = () => {
           style={styles.input}
         />
       </View>
+
       <View style={styles.inputContainer}>
         <TextInput
           placeholder="Password"
@@ -65,34 +93,38 @@ const LoginScreen = () => {
         />
       </View>
       <View style={styles.buttonContainer}>
-        <TouchableOpacity onPress={handleLogin} style={styles.button}>
-          <Text style={styles.buttonText}>Login</Text>
-        </TouchableOpacity>
         <TouchableOpacity
           onPress={handleSignUp}
           style={[styles.button, styles.buttonOutline]}
         >
-          <Text style={styles.buttonOutlineText}>Register Here!</Text>
+          <Text style={styles.buttonOutlineText}>Register</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          onPress={toLogin}
+          style={[styles.button, styles.button]}
+        >
+          <Text style={styles.buttonText}>Back to Login</Text>
         </TouchableOpacity>
       </View>
     </KeyboardAvoidingView>
   );
 };
 
-export default LoginScreen;
+export default RegisterScreen;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "lightblue",
+    backgroundColor: "#F6FCFC",
   },
   inputContainer: {
     width: "80%",
   },
   input: {
-    backgroundColor: "white",
+    backgroundColor: "#E6E6E6",
     paddingHorizontal: 15,
     paddingVertical: 10,
     borderRadius: 10,
@@ -119,6 +151,7 @@ const styles = StyleSheet.create({
   buttonOutline: {
     backgroundColor: "white",
     marginTop: 5,
+    marginBottom: 50,
     borderColor: "#0782F9",
     borderWidth: 2,
   },
@@ -132,5 +165,26 @@ const styles = StyleSheet.create({
   },
   logoName: {
     marginBottom: 30,
+  },
+  firstName: {
+    backgroundColor: "#E6E6E6",
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    borderRadius: 10,
+    marginTop: 5,
+    marginRight: 5,
+    flex: 1,
+  },
+  lastName: {
+    backgroundColor: "#E6E6E6",
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    borderRadius: 10,
+    marginTop: 5,
+    flex: 1,
+  },
+  nameField: {
+    flexDirection: "row",
+    width: "80%",
   },
 });
