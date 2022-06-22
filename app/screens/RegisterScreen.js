@@ -8,7 +8,6 @@ import {
   TouchableOpacity,
   Image,
 } from "react-native";
-import { Dropdown } from "react-native-material-dropdown";
 import { useNavigation } from "@react-navigation/core";
 
 import {
