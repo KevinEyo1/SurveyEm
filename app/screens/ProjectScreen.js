@@ -1,8 +1,18 @@
-import React from "react";
-import { Text } from "react-native";
+import { React, useState } from "react";
+import {
+  KeyboardAvoidingView,
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  TouchableOpacity,
+} from "react-native";
 
-function ProjectScreen({ navigation }) {
-  return <Text>Project Screen</Text>;
-}
-
+const ProjectScreen = () => {
+  return (
+    <View>
+      <Text>Project Screen</Text>
+    </View>
+  );
+};
 export default ProjectScreen;
