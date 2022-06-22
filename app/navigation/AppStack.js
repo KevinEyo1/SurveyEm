@@ -5,7 +5,6 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
-import RegisterParticularsScreen from "../screens/RegisterParticularsScreen";
 import LogoutScreen from "../screens/LogoutScreen";
 
 // import { auth } from "../../firebase";

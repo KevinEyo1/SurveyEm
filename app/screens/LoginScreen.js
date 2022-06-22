@@ -28,10 +28,6 @@ const LoginScreen = () => {
     return unsubscribe;
   }, []);
 
-  const handleSignUp = () => {
-    navigation.replace("Register");
-  };
-
   const handleLogin = () => {
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredentials) => {
@@ -69,7 +65,7 @@ const LoginScreen = () => {
           <Text style={styles.buttonText}>Login</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={handleSignUp}
+          onPress={navigation.navigate("Register")}
           style={[styles.button, styles.buttonOutline]}
         >
           <Text style={styles.buttonOutlineText}>Register Here!</Text>
