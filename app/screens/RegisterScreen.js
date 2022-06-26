@@ -8,14 +8,14 @@ import {
   TouchableOpacity,
   Image,
 } from "react-native";
-import { Dropdown } from "react-native-material-dropdown";
 import { useNavigation } from "@react-navigation/core";
 
 import {
   onAuthStateChanged,
   createUserWithEmailAndPassword,
 } from "firebase/auth";
-import { auth } from "../../firebase";
+import { auth, db } from "../../firebase";
+import { doc, setDoc } from "firebase/firestore";
 
 const RegisterScreen = () => {
   const [email, setEmail] = useState("");
@@ -39,6 +39,11 @@ const RegisterScreen = () => {
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredentials) => {
         const user = userCredentials.user;
+        setDoc(doc(db, "users/profile", userCredentials.user.uid), {
+          firstName: { this: firstName },
+          lastName: { this: lastName },
+          occupation: { this: occupation },
+        });
         console.log("Registered with: ", user.email);
       })
       .catch((error) => alert(error.message));
