@@ -42,42 +42,48 @@ export const surveyData = [
     title: "Sleeping Habits",
     field: "Psychology",
     user: "Kevin1",
-    points: 100,
+    points:
+      "A psychological study on how the number of hours spent sleeping affect work performance",
     id: "1",
   },
   {
     title: "Mobile Device Usage",
     field: "Computing",
     user: "Kevin2",
-    points: 200,
+    points:
+      "A psychological study on how mobile device usage affect work performance",
     id: "2",
   },
   {
     title: "Spending Habits",
     field: "Economy",
     user: "Kevin3",
-    points: 500,
+    points:
+      "A psychological study on how spending patterns affect work performance",
     id: "3",
   },
   {
     title: "Spending Habits",
     field: "Economy",
     user: "Kevin3",
-    points: 500,
+    points:
+      "A psychological study on how spending patterns affect work performance",
     id: "4",
   },
   {
     title: "Spending Habits",
     field: "Economy",
     user: "Kevin3",
-    points: 500,
+    points:
+      "A psychological study on how spending patterns affect work performance",
     id: "5",
   },
   {
     title: "Spending Habits",
     field: "Economy",
     user: "Kevin3",
-    points: 500,
+    points:
+      "A psychological study on how spending patterns affect work performance",
     id: "6",
   },
 ];
