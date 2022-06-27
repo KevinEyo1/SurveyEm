@@ -67,7 +67,7 @@ function TabNavigator({ navigation }) {
         }}
       />
       <Tab.Screen
-        name="Feedback"
+        name="Projects"
         component={ProjectScreen}
         options={{
           tabBarShowLabel: false,

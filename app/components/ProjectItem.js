@@ -7,16 +7,17 @@ import {
   TouchableOpacity,
 } from "react-native";
 
-function HomeFeedItem({ type, title, responder }) {
+function ProjectItem({ title, field, user }) {
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>{title}</Text>
+      <Text style={styles.field}>{field}</Text>
+      <Text style={styles.posted}>Posted by: </Text>
+      <Text style={styles.user}>{user}</Text>
 
       <TouchableOpacity style={styles.button}>
-        <Text style={styles.type}>{type}</Text>
+        <Text style={styles.buttonContent}>View Project</Text>
       </TouchableOpacity>
-
-      <Text style={styles.responder}>{responder}</Text>
     </SafeAreaView>
   );
 }
@@ -32,26 +33,51 @@ const styles = StyleSheet.create({
     borderColor: "white",
     backgroundColor: "#ADDBE6",
   },
+
   title: {
     padding: 30,
     marginTop: 5,
     fontSize: 16,
     fontFamily: "InknutAntiqua_700Bold",
   },
-
-  type: {
+  field: {
+    padding: 4,
+    marginTop: 15,
+    marginLeft: 10,
+    position: "absolute",
+    left: 0,
+    borderRadius: 30,
     fontSize: 10,
     fontFamily: "OpenSans_700Bold",
     color: "white",
+    backgroundColor: "#6D9CCF",
   },
-
-  responder: {
+  posted: {
     padding: 20,
     position: "absolute",
     bottom: 0,
-    marginLeft: 10,
+    marginLeft: 15,
+    fontSize: 10,
+    fontFamily: "OpenSans_400Regular",
+  },
+  user: {
+    padding: 20,
+    position: "absolute",
+    bottom: 0,
+    marginLeft: 70,
     fontSize: 10,
     fontFamily: "OpenSans_400Regular_Italic",
+  },
+  description: {
+    marginTop: 100,
+    position: "absolute",
+  },
+  points: {
+    padding: 30,
+    marginTop: 45,
+    position: "absolute",
+    alignContent: "center",
+    fontSize: 12,
   },
   button: {
     padding: 6,
@@ -65,6 +91,11 @@ const styles = StyleSheet.create({
     fontFamily: "OpenSans_700Bold",
     backgroundColor: "#C7755A",
   },
+  buttonContent: {
+    fontSize: 10,
+    fontFamily: "OpenSans_700Bold",
+    color: "white",
+  },
 });
 
-export default HomeFeedItem;
+export default ProjectItem;
