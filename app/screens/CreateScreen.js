@@ -12,6 +12,10 @@ const CreateScreen = ({ navigation }) => {
     navigation.navigate("CreateProject");
   };
 
+  const handleCreateSurvey = () => {
+    navigation.navigate("CreateSurvey");
+  };
+
   return (
     <KeyboardAvoidingView style={styles.container} behaviour="padding">
       <View style={styles.buttonContainer}>
@@ -19,7 +23,7 @@ const CreateScreen = ({ navigation }) => {
           <Text style={styles.buttonText}>Create Project</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          // onPress={}
+          onPress={handleCreateSurvey}
           style={[styles.button, styles.buttonOutline]}
         >
           <Text style={styles.buttonOutlineText}>Create Survey</Text>

@@ -30,7 +30,7 @@ const ProjectScreen = () => {
 
   useEffect(() => {
     getProjects();
-  }, []);
+  });
 
   const getProjects = () => {
     const list = [];
@@ -48,7 +48,6 @@ const ProjectScreen = () => {
               user={auth.currentUser.email}
             />
           );
-          console.log(projectItems);
         });
         setProjectItems(list);
       })
