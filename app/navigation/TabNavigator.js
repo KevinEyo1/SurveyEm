@@ -4,7 +4,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 
 import HomeScreen from "../screens/HomeScreen";
 import SurveyScreen from "../screens/SurveyScreen";
-import CreateScreen from "../screens/CreateScreen";
+import CreateStack from "./CreateStack";
 import ProjectScreen from "../screens/ProjectScreen";
 import RewardsScreen from "../screens/RewardsScreen";
 
@@ -56,8 +56,8 @@ function TabNavigator({ navigation }) {
         }}
       />
       <Tab.Screen
-        name="Create"
-        component={CreateScreen}
+        name="CreateStack"
+        component={CreateStack}
         options={{
           tabBarShowLabel: false,
 
@@ -67,7 +67,7 @@ function TabNavigator({ navigation }) {
         }}
       />
       <Tab.Screen
-        name="Project"
+        name="Feedback"
         component={ProjectScreen}
         options={{
           tabBarShowLabel: false,

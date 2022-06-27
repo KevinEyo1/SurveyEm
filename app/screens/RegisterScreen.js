@@ -11,8 +11,8 @@ import {
 import { useNavigation } from "@react-navigation/core";
 
 import {
-  onAuthStateChanged,
   createUserWithEmailAndPassword,
+  onAuthStateChanged,
 } from "firebase/auth";
 import { auth, db } from "../../firebase";
 import { doc, setDoc } from "firebase/firestore";
@@ -39,11 +39,11 @@ const RegisterScreen = () => {
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredentials) => {
         const user = userCredentials.user;
-        setDoc(doc(db, "users/profile", userCredentials.user.uid), {
+        setDoc(doc(db, "users", userCredentials.user.uid), {
           firstName: { this: firstName },
           lastName: { this: lastName },
           occupation: { this: occupation },
-        });
+        }).catch((error) => alert(error.message));
         console.log("Registered with: ", user.email);
       })
       .catch((error) => alert(error.message));
