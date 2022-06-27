@@ -40,9 +40,9 @@ const RegisterScreen = () => {
       .then((userCredentials) => {
         const user = userCredentials.user;
         setDoc(doc(db, "users", userCredentials.user.uid), {
-          firstName: { this: firstName },
-          lastName: { this: lastName },
-          occupation: { this: occupation },
+          firstName: firstName,
+          lastName: lastName,
+          occupation: occupation,
         }).catch((error) => alert(error.message));
         console.log("Registered with: ", user.email);
       })

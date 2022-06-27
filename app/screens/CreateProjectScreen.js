@@ -19,9 +19,9 @@ const CreateProjectScreen = () => {
 
   const handleCreatingProject = () => {
     addDoc(collection(db, "users", auth.currentUser.uid, "projects"), {
-      title: { this: title },
-      field: { this: field },
-      description: { this: description },
+      title: title,
+      field: field,
+      description: description,
     }).catch((error) => alert(error.message));
   };
 

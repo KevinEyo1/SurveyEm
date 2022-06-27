@@ -5,6 +5,8 @@ import {
   SafeAreaView,
   StyleSheet,
   TouchableOpacity,
+  Modal,
+  Alert,
 } from "react-native";
 
 function ProjectItem({ title, field, user }) {
