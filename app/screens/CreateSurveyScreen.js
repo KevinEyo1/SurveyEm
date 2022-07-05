@@ -69,6 +69,18 @@ const CreateSurveyScreen = () => {
     }
   };
 
+  let data = [
+    {
+      value: "Banana",
+    },
+    {
+      value: "Mango",
+    },
+    {
+      value: "Pear",
+    },
+  ];
+
   return (
     <KeyboardAvoidingView style={styles.container} behaviour="padding">
       <View style={styles.inputContainer}>
