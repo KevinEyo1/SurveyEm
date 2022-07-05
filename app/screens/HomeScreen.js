@@ -1,66 +1,65 @@
-import React from "react";
+import { React, useState, useEffect } from "react";
 import {
   SafeAreaView,
-  Text,
   ScrollView,
   StyleSheet,
+  Text,
+  View,
+  TextInput,
   TouchableOpacity,
 } from "react-native";
-import { View } from "react-native";
 
-import { homeFeedData } from "../model/data";
-import HomeFeedItem from "../components/HomeFeedItem";
+import ProjectItem from "../components/ProjectItem";
 
-function HomeScreen({ navigator }) {
+import { onAuthStateChanged } from "firebase/auth";
+import { auth, db } from "../../firebase";
+import {
+  doc,
+  setDoc,
+  getDoc,
+  addDoc,
+  collection,
+  getDocs,
+} from "firebase/firestore";
+import { render } from "react-dom";
+
+const HomeScreen = () => {
+  const [projectItems, setProjectItems] = useState([]);
+  const uid = auth.currentUser.uid;
+
+  useEffect(() => {
+    getProjects();
+  });
+
+  const getProjects = () => {
+    const list = [];
+    const projectQuerySnapshot = getDocs(
+      collection(db, "users", uid, "projects")
+    );
+    projectQuerySnapshot
+      .then((q) => {
+        q.forEach((project) => {
+          list.push(
+            <ProjectItem
+              key={project.id}
+              title={project.data().title}
+              field={project.data().field}
+              user={auth.currentUser.email}
+            />
+          );
+        });
+        setProjectItems(list);
+      })
+      .catch((e) => alert(e.message));
+  };
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
       <ScrollView style={{ padding: 10 }}>
-        {/* top header bar */}
-        <View>
-          {true == true &&
-            homeFeedData.map((item) => (
-              <HomeFeedItem
-                key={item.id}
-                type={item.type}
-                title={item.title}
-                responder={item.responder}
-              />
-            ))}
-        </View>
+        <View>{projectItems}</View>
       </ScrollView>
     </SafeAreaView>
   );
-}
+};
 
 export default HomeScreen;
-
-//   return (
-//     <View style={styles.container}>
-//       <Text>Email: </Text>
-//       <TouchableOpacity onPress={handleSignOut} style={styles.button}>
-//         <Text style={styles.buttonText}>Sign Out</Text>
-//       </TouchableOpacity>
-//     </View>
-//   );
-// };
-
-// const styles = StyleSheet.create({
-//   buttonText: {
-//     color: "white",
-//     fontWeight: "700",
-//     fontSize: 16,
-//   },
-//   container: {
-//     flex: 1,
-//     justifyContent: "center",
-//     alignItems: "center",
-//   },
-//   button: {
-//     backgroundColor: "#0782F9",
-//     width: "60%",
-//     padding: 15,
-//     borderRadius: 10,
-//     alignItems: "center",
-//     marginTop: 40,
-//   },
-// });

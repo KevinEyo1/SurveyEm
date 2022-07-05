@@ -9,6 +9,7 @@ import {
   Image,
 } from "react-native";
 import { useNavigation } from "@react-navigation/core";
+import DropDownPicker from "react-native-dropdown-picker";
 
 import {
   createUserWithEmailAndPassword,
@@ -22,7 +23,12 @@ const RegisterScreen = () => {
   const [password, setPassword] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [occupation, setOccupation] = useState("");
+  const [occupation, setOccupation] = useState(null);
+  const [open, setOpen] = useState(false);
+  const [items, setItems] = useState([
+    { label: "Student", value: "student" },
+    { label: "Professional", value: "professional" },
+  ]);
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -72,11 +78,13 @@ const RegisterScreen = () => {
       </View>
 
       <View style={styles.inputContainer}>
-        <TextInput
-          placeholder="Occupation"
+        <DropDownPicker
+          open={open}
           value={occupation}
-          onChangeText={(text) => setOccupation(text)}
-          style={styles.input}
+          items={items}
+          setOpen={setOpen}
+          setValue={setOccupation}
+          setItems={setItems}
         />
       </View>
 

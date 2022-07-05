@@ -53,24 +53,6 @@ const ProjectScreen = () => {
       })
       .catch((e) => alert(e.message));
   };
-  // const projectQuerySnapshot = getDocs(
-  //   collection(db, "users", uid, "projects")
-  // );
-  // projectQuerySnapshot
-  //   .then((qs) => {
-  //     qs.forEach((project) => {
-  //       projectItems.push(
-  //         <ProjectItem
-  //           key={project.id}
-  //           title={project.get(title)}
-  //           field={project.get(field)}
-  //           user={auth.currentUser.email}
-  //         />
-  //       );
-  //       console.log(project.id);
-  //     });
-  //   })
-  //   .catch((error) => alert(error.message));
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>

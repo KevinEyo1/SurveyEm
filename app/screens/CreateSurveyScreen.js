@@ -1,4 +1,4 @@
-import { React, useState } from "react";
+import { React, useState, useEffect } from "react";
 import {
   KeyboardAvoidingView,
   StyleSheet,
@@ -8,25 +8,80 @@ import {
   TouchableOpacity,
   Alert,
 } from "react-native";
+import DropDownPicker from "react-native-dropdown-picker";
 
 import { useNavigation } from "@react-navigation/core";
+
+import { auth, db } from "../../firebase";
+import {
+  doc,
+  setDoc,
+  getDoc,
+  addDoc,
+  collection,
+  getDocs,
+} from "firebase/firestore";
 
 const CreateSurveyScreen = () => {
   const [title, setTitle] = useState("");
   const [field, setField] = useState("");
   const [description, setDescription] = useState("");
+  // const [projects, setProjects] = useState([]);
+  const [selectedProject, setSelectedProject] = useState(null);
+  const [open, setOpen] = useState(false);
+  const [items, setItems] = useState([]);
+  const uid = auth.currentUser.uid;
+
+  useEffect(() => {
+    getProjects();
+  }, []);
+
+  const getProjects = () => {
+    const list = [];
+    const projectQuerySnapshot = getDocs(
+      collection(db, "users", uid, "projects")
+    );
+    projectQuerySnapshot
+      .then((q) => {
+        q.forEach((project) => {
+          list.push({ label: project.data().title, value: project.id });
+        });
+        setItems(list);
+        console.log(list);
+      })
+      .catch((e) => alert(e.message));
+  };
 
   const navigation = useNavigation();
   const handleNext = () => {
     if (title == "" || field == "" || description == "") {
       Alert.alert("Fields not completed");
     } else {
-      navigation.navigate("SurveyQuestions");
+      const newSurveyRef = doc(
+        collection(db, "users", uid, "projects", selectedProject, "surveys")
+      );
+      setDoc(newSurveyRef, {
+        title: title,
+        field: field,
+        description: description,
+      }).catch((error) => alert(error.message));
+      // navigation.navigate("SurveyQuestions");
     }
   };
 
   return (
     <KeyboardAvoidingView style={styles.container} behaviour="padding">
+      <View style={styles.inputContainer}>
+        <DropDownPicker
+          open={open}
+          value={selectedProject}
+          items={items}
+          setOpen={setOpen}
+          setValue={setSelectedProject}
+          setItems={setItems}
+        />
+      </View>
+
       <View style={styles.inputContainer}>
         <TextInput
           placeholder="Title"
