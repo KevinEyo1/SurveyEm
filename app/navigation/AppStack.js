@@ -5,6 +5,8 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
+import CreateTagScreen from "../screens/CreateTagScreen";
+import MyRewardsScreen from "../screens/MyRewardsScreen";
 import LogoutScreen from "../screens/LogoutScreen";
 
 // import { auth } from "../../firebase";
@@ -43,6 +45,24 @@ function AppStack() {
         options={{
           drawerIcon: ({ color }) => (
             <Ionicons name="home-outline" size={32} color={color} />
+          ),
+        }}
+      />
+      <Drawer.Screen
+        name="Add Tags"
+        component={CreateTagScreen}
+        options={{
+          drawerIcon: ({ color }) => (
+            <Ionicons name="log-out-outline" size={32} color={color} />
+          ),
+        }}
+      />
+      <Drawer.Screen
+        name="My Rewards"
+        component={MyRewardsScreen}
+        options={{
+          drawerIcon: ({ color }) => (
+            <Ionicons name="log-out-outline" size={32} color={color} />
           ),
         }}
       />
