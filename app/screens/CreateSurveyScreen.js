@@ -21,9 +21,21 @@ const CreateSurveyScreen = () => {
     if (title == "" || field == "" || description == "") {
       Alert.alert("Fields not completed");
     } else {
-      navigation.navigate("SurveyQuestions");
+      navigation.navigate("CreateSurveyQuestions");
     }
   };
+
+  let data = [
+    {
+      value: "Banana",
+    },
+    {
+      value: "Mango",
+    },
+    {
+      value: "Pear",
+    },
+  ];
 
   return (
     <KeyboardAvoidingView style={styles.container} behaviour="padding">

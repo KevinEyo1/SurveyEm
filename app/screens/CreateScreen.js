@@ -6,11 +6,8 @@ import {
   View,
   TouchableOpacity,
 } from "react-native";
-import { useNavigation } from "@react-navigation/core";
 
-const CreateScreen = () => {
-  const navigation = useNavigation();
-
+const CreateScreen = ({ navigation }) => {
   const handleCreateProject = () => {
     navigation.navigate("CreateProject");
   };

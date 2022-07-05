@@ -8,10 +8,22 @@ import {
   TouchableOpacity,
 } from "react-native";
 
+import { onAuthStateChanged } from "firebase/auth";
+import { auth, db } from "../../firebase";
+import { doc, setDoc, addDoc, collection } from "firebase/firestore";
+
 const CreateProjectScreen = () => {
   const [title, setTitle] = useState("");
   const [field, setField] = useState("");
   const [description, setDescription] = useState("");
+
+  const handleCreatingProject = () => {
+    addDoc(collection(db, "users", auth.currentUser.uid, "projects"), {
+      title: title,
+      field: field,
+      description: description,
+    }).catch((error) => alert(error.message));
+  };
 
   return (
     <KeyboardAvoidingView style={styles.container} behaviour="padding">
@@ -43,7 +55,7 @@ const CreateProjectScreen = () => {
         />
 
         <TouchableOpacity
-          // onPress={}
+          onPress={handleCreatingProject}
           style={[styles.button, styles.button]}
         >
           <Text style={styles.buttonText}>Create Project</Text>

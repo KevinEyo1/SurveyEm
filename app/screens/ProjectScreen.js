@@ -1,4 +1,4 @@
-import { React, useState } from "react";
+import { React, useState, useEffect } from "react";
 import {
   SafeAreaView,
   ScrollView,
@@ -12,25 +12,70 @@ import {
 import { projectData } from "../model/data";
 import ProjectItem from "../components/ProjectItem";
 
+import { onAuthStateChanged } from "firebase/auth";
+import { auth, db } from "../../firebase";
+import {
+  doc,
+  setDoc,
+  getDoc,
+  addDoc,
+  collection,
+  getDocs,
+} from "firebase/firestore";
+import { render } from "react-dom";
+
 const ProjectScreen = () => {
+  const [projectItems, setProjectItems] = useState([]);
+  const uid = auth.currentUser.uid;
+
+  useEffect(() => {
+    getProjects();
+  });
+
+  const getProjects = () => {
+    const list = [];
+    const projectQuerySnapshot = getDocs(
+      collection(db, "users", uid, "projects")
+    );
+    projectQuerySnapshot
+      .then((q) => {
+        q.forEach((project) => {
+          list.push(
+            <ProjectItem
+              key={project.id}
+              title={project.data().title}
+              field={project.data().field}
+              user={auth.currentUser.email}
+            />
+          );
+        });
+        setProjectItems(list);
+      })
+      .catch((e) => alert(e.message));
+  };
+  // const projectQuerySnapshot = getDocs(
+  //   collection(db, "users", uid, "projects")
+  // );
+  // projectQuerySnapshot
+  //   .then((qs) => {
+  //     qs.forEach((project) => {
+  //       projectItems.push(
+  //         <ProjectItem
+  //           key={project.id}
+  //           title={project.get(title)}
+  //           field={project.get(field)}
+  //           user={auth.currentUser.email}
+  //         />
+  //       );
+  //       console.log(project.id);
+  //     });
+  //   })
+  //   .catch((error) => alert(error.message));
+
   return (
-    // <View>
-    //   <Text>Project Screen</Text>
-    // </View>
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
       <ScrollView style={{ padding: 10 }}>
-        {/* top header bar */}
-        <View>
-          {true == true &&
-            projectData.map((item) => (
-              <ProjectItem
-                key={item.id}
-                title={item.title}
-                field={item.field}
-                user={item.user}
-              />
-            ))}
-        </View>
+        <View>{projectItems}</View>
       </ScrollView>
     </SafeAreaView>
   );

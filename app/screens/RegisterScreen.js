@@ -11,10 +11,11 @@ import {
 import { useNavigation } from "@react-navigation/core";
 
 import {
-  onAuthStateChanged,
   createUserWithEmailAndPassword,
+  onAuthStateChanged,
 } from "firebase/auth";
-import { auth } from "../../firebase";
+import { auth, db } from "../../firebase";
+import { doc, setDoc } from "firebase/firestore";
 
 const RegisterScreen = () => {
   const [email, setEmail] = useState("");
@@ -38,6 +39,11 @@ const RegisterScreen = () => {
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredentials) => {
         const user = userCredentials.user;
+        setDoc(doc(db, "users", userCredentials.user.uid), {
+          firstName: firstName,
+          lastName: lastName,
+          occupation: occupation,
+        }).catch((error) => alert(error.message));
         console.log("Registered with: ", user.email);
       })
       .catch((error) => alert(error.message));

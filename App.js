@@ -33,7 +33,6 @@ export default function App() {
   }
   return (
     <NavigationContainer>
-      {/* check logged in here then go auth stack or app stack */}
       <AuthStack />
     </NavigationContainer>
   );
