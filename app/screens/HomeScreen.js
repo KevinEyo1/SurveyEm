@@ -20,6 +20,8 @@ import {
   addDoc,
   collection,
   getDocs,
+  query,
+  where,
 } from "firebase/firestore";
 import { render } from "react-dom";
 
@@ -29,28 +31,36 @@ const HomeScreen = () => {
 
   useEffect(() => {
     getProjects();
-  });
+  }, []);
 
   const getProjects = () => {
     const list = [];
-    const projectQuerySnapshot = getDocs(
-      collection(db, "users", uid, "projects")
+    const userProjectsQuery = query(
+      collection(db, "projects"),
+      where("uid", "==", uid)
     );
+    const projectQuerySnapshot = getDocs(userProjectsQuery);
     projectQuerySnapshot
       .then((q) => {
         q.forEach((project) => {
-          list.push(
-            <ProjectItem
-              key={project.id}
-              title={project.data().title}
-              field={project.data().field}
-              user={auth.currentUser.email}
-            />
-          );
+          list.push({
+            key: project.id,
+            title: project.data().title,
+            tag: project.data().tag,
+            user: "",
+          });
         });
-        setProjectItems(list);
       })
       .catch((e) => alert(e.message));
+    list.forEach((project) => (
+      <ProjectItem
+        key={project.key}
+        title={project.title}
+        tag={project.tag}
+        user={project.user}
+      ></ProjectItem>
+    ));
+    setProjectItems(list);
   };
 
   return (

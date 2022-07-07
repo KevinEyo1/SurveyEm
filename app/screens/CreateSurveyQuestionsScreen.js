@@ -12,12 +12,18 @@ import {
 } from "react-native";
 import { React, useState } from "react";
 
-var data = [];
-
 const CreateSurveyQuestionsScreen = () => {
   const [modalVisible, setModalVisible] = useState(false);
-  const [question1, setQuestion1] = useState("");
+  const [question, setQuestion] = useState("");
+  const [data, setData] = useState([]);
+  const list = [];
 
+  const renderItem = ({ item }) => (
+    <SurveyQuestionItem
+      // label={item.label}
+      question={item.question}
+    ></SurveyQuestionItem>
+  );
   return (
     <View style={styles.centeredView}>
       <Modal
@@ -40,8 +46,8 @@ const CreateSurveyQuestionsScreen = () => {
             <View style={styles.inputContainer}>
               <TextInput
                 placeholder="Question"
-                value={question1}
-                onChangeText={(text) => setQuestion1(text)}
+                value={question}
+                onChangeText={(text) => setQuestion(text)}
                 style={styles.input}
               />
             </View>
@@ -49,11 +55,12 @@ const CreateSurveyQuestionsScreen = () => {
             <TouchableOpacity
               style={[styles.button, styles.buttonAdd]}
               onPress={() => {
-                if (question1.length == 0) {
+                if (question.length == 0) {
                   Alert.alert("Input Question");
                 }
-                data.push(question1);
-                console.log(data);
+                list.push(question);
+                setQuestion("");
+                setData(list);
                 setModalVisible(!modalVisible);
               }}
             >
@@ -62,6 +69,12 @@ const CreateSurveyQuestionsScreen = () => {
           </View>
         </View>
       </Modal>
+      <FlatList
+        data={data}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.id}
+        extraData={data}
+      />
       <Pressable
         style={[styles.button, styles.buttonOpen]}
         onPress={() => setModalVisible(true)}
@@ -71,12 +84,21 @@ const CreateSurveyQuestionsScreen = () => {
       <Pressable
         style={[styles.button, styles.buttonOpen]}
         onPress={() => {
-          data = [];
+          list = [];
+          setData([]);
           console.log(data);
         }}
       >
         <Text style={styles.textStyle}>Clear</Text>
       </Pressable>
+      {/* <Pressable
+        style={[styles.button, styles.buttonOpen]}
+        onPress={() => {
+          
+        }}
+      >
+        <Text style={styles.textStyle}>Submit</Text>
+      </Pressable> */}
     </View>
   );
 };

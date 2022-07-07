@@ -1,4 +1,4 @@
-import { React, useState } from "react";
+import { React, useEffect, useState } from "react";
 import {
   KeyboardAvoidingView,
   StyleSheet,
@@ -7,20 +7,42 @@ import {
   TextInput,
   TouchableOpacity,
 } from "react-native";
+import DropDownPicker from "react-native-dropdown-picker";
 
 import { onAuthStateChanged } from "firebase/auth";
 import { auth, db } from "../../firebase";
-import { doc, setDoc, addDoc, collection } from "firebase/firestore";
+import { doc, setDoc, addDoc, collection, getDocs } from "firebase/firestore";
 
 const CreateProjectScreen = () => {
   const [title, setTitle] = useState("");
-  const [field, setField] = useState("");
   const [description, setDescription] = useState("");
+  const [tag, setTag] = useState(null);
+  const [open, setOpen] = useState(false);
+  const [items, setItems] = useState([]);
+
+  useEffect(() => {
+    getTags();
+  }, []);
+
+  const getTags = () => {
+    const list = [];
+    const tagQuerySnapshot = getDocs(collection(db, "tags"));
+    tagQuerySnapshot
+      .then((q) => {
+        q.forEach((tag) => {
+          list.push({ label: tag.data().tag, value: tag.data().tag });
+        });
+        setItems(list);
+        console.log(list);
+      })
+      .catch((e) => alert(e.message));
+  };
 
   const handleCreatingProject = () => {
-    addDoc(collection(db, "users", auth.currentUser.uid, "projects"), {
+    addDoc(collection(db, "projects"), {
+      uid: auth.currentUser.uid,
       title: title,
-      field: field,
+      tag: tag,
       description: description,
     }).catch((error) => alert(error.message));
   };
@@ -28,19 +50,20 @@ const CreateProjectScreen = () => {
   return (
     <KeyboardAvoidingView style={styles.container} behaviour="padding">
       <View style={styles.inputContainer}>
+        <DropDownPicker
+          open={open}
+          value={tag}
+          items={items}
+          setOpen={setOpen}
+          setValue={setTag}
+          setItems={setItems}
+        />
+      </View>
+      <View style={styles.inputContainer}>
         <TextInput
           placeholder="Title"
           value={title}
           onChangeText={(text) => setTitle(text)}
-          style={styles.input}
-        />
-      </View>
-
-      <View style={styles.inputContainer}>
-        <TextInput
-          placeholder="Field of Study"
-          value={field}
-          onChangeText={(text) => setField(text)}
           style={styles.input}
         />
       </View>

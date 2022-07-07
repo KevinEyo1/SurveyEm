@@ -24,7 +24,6 @@ import {
 
 const CreateSurveyScreen = () => {
   const [title, setTitle] = useState("");
-  const [field, setField] = useState("");
   const [description, setDescription] = useState("");
   // const [projects, setProjects] = useState([]);
   const [selectedProject, setSelectedProject] = useState(null);
@@ -38,13 +37,11 @@ const CreateSurveyScreen = () => {
 
   const getProjects = () => {
     const list = [];
-    const projectQuerySnapshot = getDocs(
-      collection(db, "users", uid, "projects")
-    );
+    const projectQuerySnapshot = getDocs(collection(db, "projects"));
     projectQuerySnapshot
       .then((q) => {
         q.forEach((project) => {
-          list.push({ label: project.data().title, value: project.id });
+          list.push({ label: project.data().title, value: project });
         });
         setItems(list);
         console.log(list);
@@ -54,32 +51,19 @@ const CreateSurveyScreen = () => {
 
   const navigation = useNavigation();
   const handleNext = () => {
-    if (title == "" || field == "" || description == "") {
+    if (title == "" || selectedProject == null || description == "") {
       Alert.alert("Fields not completed");
     } else {
-      const newSurveyRef = doc(
-        collection(db, "users", uid, "projects", selectedProject, "surveys")
-      );
+      const newSurveyRef = doc(collection(db, "surveys"));
       setDoc(newSurveyRef, {
+        pid: selectedProject.id,
         title: title,
-        field: field,
+        tag: selectedProject.data().tag,
         description: description,
       }).catch((error) => alert(error.message));
-      // navigation.navigate("SurveyQuestions");
+      navigation.navigate("SurveyQuestions");
     }
   };
-
-  let data = [
-    {
-      value: "Banana",
-    },
-    {
-      value: "Mango",
-    },
-    {
-      value: "Pear",
-    },
-  ];
 
   return (
     <KeyboardAvoidingView style={styles.container} behaviour="padding">
@@ -99,15 +83,6 @@ const CreateSurveyScreen = () => {
           placeholder="Title"
           value={title}
           onChangeText={(text) => setTitle(text)}
-          style={styles.input}
-        />
-      </View>
-
-      <View style={styles.inputContainer}>
-        <TextInput
-          placeholder="Field of Study"
-          value={field}
-          onChangeText={(text) => setField(text)}
           style={styles.input}
         />
       </View>

@@ -21,6 +21,8 @@ import {
   addDoc,
   collection,
   getDocs,
+  query,
+  where,
 } from "firebase/firestore";
 import { render } from "react-dom";
 
@@ -30,28 +32,37 @@ const ProjectScreen = () => {
 
   useEffect(() => {
     getProjects();
-  });
+  }, []);
 
   const getProjects = () => {
     const list = [];
-    const projectQuerySnapshot = getDocs(
-      collection(db, "users", uid, "projects")
+    const otherProjectsQuery = query(
+      collection(db, "projects"),
+      where("uid", "!=", uid)
     );
+    const projectQuerySnapshot = getDocs(otherProjectsQuery);
     projectQuerySnapshot
       .then((q) => {
         q.forEach((project) => {
-          list.push(
-            <ProjectItem
-              key={project.id}
-              title={project.data().title}
-              field={project.data().field}
-              user={auth.currentUser.email}
-            />
-          );
+          const user = getDoc(doc(db, "users", project.data().uid));
+          list.push({
+            key: project.id,
+            title: project.data().title,
+            tag: project.data().tag,
+            user: user.data().username,
+          });
         });
-        setProjectItems(list);
       })
       .catch((e) => alert(e.message));
+    list.forEach((project) => (
+      <ProjectItem
+        key={project.key}
+        title={project.title}
+        tag={project.tag}
+        user={project.user}
+      />
+    ));
+    setProjectItems(list);
   };
 
   return (
