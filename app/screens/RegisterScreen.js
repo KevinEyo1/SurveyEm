@@ -51,6 +51,8 @@ const RegisterScreen = () => {
           firstName: firstName,
           lastName: lastName,
           occupation: occupation,
+          coins: 0,
+          ownedRewards: [],
         }).catch((error) => alert(error.message));
         console.log("Registered with: ", user.email);
       })

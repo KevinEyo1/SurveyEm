@@ -20,16 +20,21 @@ import {
   addDoc,
   collection,
   getDocs,
+  query,
+  where,
 } from "firebase/firestore";
 
 const CreateSurveyScreen = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [newSurveyRef, setNewSurveyRef] = useState(null);
   // const [projects, setProjects] = useState([]);
   const [selectedProject, setSelectedProject] = useState(null);
   const [open, setOpen] = useState(false);
   const [items, setItems] = useState([]);
   const uid = auth.currentUser.uid;
+
+  // survey status include "Unpublished", "Published", "Ended"
 
   useEffect(() => {
     getProjects();
@@ -37,14 +42,15 @@ const CreateSurveyScreen = () => {
 
   const getProjects = () => {
     const list = [];
-    const projectQuerySnapshot = getDocs(collection(db, "projects"));
+    const projectQuerySnapshot = getDocs(
+      query(collection(db, "projects"), where("userid", "==", uid))
+    );
     projectQuerySnapshot
       .then((q) => {
         q.forEach((project) => {
-          list.push({ label: project.data().title, value: project });
+          list.push({ label: project.data().title, value: project.id });
         });
         setItems(list);
-        console.log(list);
       })
       .catch((e) => alert(e.message));
   };
@@ -54,14 +60,23 @@ const CreateSurveyScreen = () => {
     if (title == "" || selectedProject == null || description == "") {
       Alert.alert("Fields not completed");
     } else {
-      const newSurveyRef = doc(collection(db, "surveys"));
-      setDoc(newSurveyRef, {
-        pid: selectedProject.id,
-        title: title,
-        tag: selectedProject.data().tag,
-        description: description,
-      }).catch((error) => alert(error.message));
-      navigation.navigate("SurveyQuestions");
+      const project = getDoc(doc(db, "projects", selectedProject));
+      project.then((project) => {
+        setNewSurveyRef(doc(collection(db, "surveys")));
+        setDoc(newSurveyRef, {
+          pid: project.id,
+          title: title,
+          tag: project.data().tag,
+          description: description,
+          coinsReward: 0,
+          status: "Unpublished",
+        }).catch((e) => alert(e.message));
+        console.log(newSurveyRef.id);
+        navigation.navigate("CreateSurveyQuestions", {
+          sid: newSurveyRef.id,
+          first: true,
+        });
+      });
     }
   };
 
@@ -89,8 +104,8 @@ const CreateSurveyScreen = () => {
 
       <View style={styles.inputContainer}>
         <TextInput
-          placeholder="Description (max 40 words)"
-          maxLength={40}
+          placeholder="Description (max 100 characters)"
+          maxLength={100}
           value={description}
           onChangeText={(text) => setDescription(text)}
           style={styles.input}
@@ -102,6 +117,7 @@ const CreateSurveyScreen = () => {
       </View>
     </KeyboardAvoidingView>
   );
+  ``;
 };
 
 export default CreateSurveyScreen;

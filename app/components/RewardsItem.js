@@ -1,12 +1,12 @@
 import React from "react";
 import { Text, View, SafeAreaView, StyleSheet, Image } from "react-native";
 
-function RewardsItem({ title, image, pointCosts }) {
+function RewardsItem({ title, description, coinsCost }) {
   return (
     <SafeAreaView style={styles.container}>
-      <Image style={styles.image} source={image} resizeMode="center"></Image>
       <Text style={styles.title}>{title}</Text>
-      <Text style={styles.pointCosts}>{pointCosts}</Text>
+      <Text>{description}</Text>
+      <Text style={styles.coinsCost}>{coinsCost}</Text>
     </SafeAreaView>
   );
 }
@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
   },
   title: { padding: 20, position: "absolute", bottom: 0, height: "50%" },
   image: { height: "50%", right: "50%" },
-  pointCosts: {
+  coinsCost: {
     padding: 20,
     position: "absolute",
     right: 0,

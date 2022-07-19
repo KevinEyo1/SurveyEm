@@ -6,6 +6,7 @@ import {
   View,
   TextInput,
   TouchableOpacity,
+  Alert,
 } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
 
@@ -13,7 +14,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { auth, db } from "../../firebase";
 import { doc, setDoc, addDoc, collection, getDocs } from "firebase/firestore";
 
-const CreateProjectScreen = () => {
+const CreateProjectScreen = ({ navigation }) => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [tag, setTag] = useState(null);
@@ -33,18 +34,25 @@ const CreateProjectScreen = () => {
           list.push({ label: tag.data().tag, value: tag.data().tag });
         });
         setItems(list);
-        console.log(list);
       })
       .catch((e) => alert(e.message));
   };
 
   const handleCreatingProject = () => {
-    addDoc(collection(db, "projects"), {
-      uid: auth.currentUser.uid,
-      title: title,
-      tag: tag,
-      description: description,
-    }).catch((error) => alert(error.message));
+    const user = getDoc(doc(db, "users", auth.currentUser.uid));
+    user
+      .then((q) => {
+        addDoc(collection(db, "projects"), {
+          userid: auth.currentUser.uid,
+          title: title,
+          tag: tag,
+          description: description,
+          username: user.data().username,
+        }).catch((error) => alert(error.message));
+        Alert.alert("Project created.");
+        navigation.popToTop();
+      })
+      .catch((e) => alert(e.message));
   };
 
   return (

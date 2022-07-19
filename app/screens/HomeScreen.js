@@ -23,50 +23,62 @@ import {
   query,
   where,
 } from "firebase/firestore";
-import { render } from "react-dom";
 
-const HomeScreen = () => {
+const HomeScreen = ({ navigation }) => {
   const [projectItems, setProjectItems] = useState([]);
+  const [loaded, setLoaded] = useState(false);
   const uid = auth.currentUser.uid;
 
   useEffect(() => {
-    getProjects();
-  }, []);
+    const unsubscribe = navigation.addListener("focus", () => {
+      getProjects();
+    });
+    return unsubscribe;
+  }, [navigation]);
 
   const getProjects = () => {
     const list = [];
-    const userProjectsQuery = query(
-      collection(db, "projects"),
-      where("uid", "==", uid)
+    const projectQuerySnapshot = getDocs(
+      query(collection(db, "projects"), where("userid", "==", uid))
     );
-    const projectQuerySnapshot = getDocs(userProjectsQuery);
     projectQuerySnapshot
       .then((q) => {
         q.forEach((project) => {
           list.push({
-            key: project.id,
+            id: project.id,
             title: project.data().title,
             tag: project.data().tag,
+            description: project.data().description,
             user: "",
+            self: true,
           });
         });
+        setProjectItems(list);
+        setLoaded(true);
       })
       .catch((e) => alert(e.message));
-    list.forEach((project) => (
-      <ProjectItem
-        key={project.key}
-        title={project.title}
-        tag={project.tag}
-        user={project.user}
-      ></ProjectItem>
-    ));
-    setProjectItems(list);
   };
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
       <ScrollView style={{ padding: 10 }}>
-        <View>{projectItems}</View>
+        <View>
+          {projectItems.length == 0 && loaded == true && (
+            <Text>No projects created yet.</Text>
+          )}
+          {projectItems.length != 0 &&
+            projectItems.map((project) => (
+              <ProjectItem
+                key={project.id}
+                pid={project.id}
+                title={project.title}
+                tag={project.tag}
+                description={project.description}
+                user={project.user}
+                self={project.self}
+              ></ProjectItem>
+            ))}
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
