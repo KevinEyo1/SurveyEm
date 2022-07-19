@@ -7,10 +7,12 @@ import {
   TouchableOpacity,
   Pressable,
   Modal,
-  FlatList,
   Alert,
 } from "react-native";
 import { React, useState } from "react";
+
+import SurveyQuestionItem from "../components/SurveyQuestionItem";
+import { createSurveyData } from "../model/data";
 
 var data = [];
 
@@ -77,6 +79,17 @@ const CreateSurveyQuestionsScreen = () => {
       >
         <Text style={styles.textStyle}>Clear</Text>
       </Pressable>
+
+      <View style={styles.inputContainer}>
+        {true == true &&
+          createSurveyData.map((item) => (
+            <SurveyQuestionItem
+              key={item.id}
+              question={item.question}
+              label={item.label}
+            />
+          ))}
+      </View>
     </View>
   );
 };

@@ -56,6 +56,8 @@ const CreateSurveyScreen = () => {
   const handleNext = () => {
     if (title == "" || field == "" || description == "") {
       Alert.alert("Fields not completed");
+    } else if (selectedProject == null) {
+      Alert.alert("No Project Selected");
     } else {
       const newSurveyRef = doc(
         collection(db, "users", uid, "projects", selectedProject, "surveys")
@@ -65,21 +67,9 @@ const CreateSurveyScreen = () => {
         field: field,
         description: description,
       }).catch((error) => alert(error.message));
-      // navigation.navigate("SurveyQuestions");
+      navigation.navigate("CreateSurveyQuestions");
     }
   };
-
-  let data = [
-    {
-      value: "Banana",
-    },
-    {
-      value: "Mango",
-    },
-    {
-      value: "Pear",
-    },
-  ];
 
   return (
     <KeyboardAvoidingView style={styles.container} behaviour="padding">

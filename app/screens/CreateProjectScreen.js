@@ -6,6 +6,7 @@ import {
   View,
   TextInput,
   TouchableOpacity,
+  Alert,
 } from "react-native";
 
 import { onAuthStateChanged } from "firebase/auth";
@@ -17,12 +18,13 @@ const CreateProjectScreen = () => {
   const [field, setField] = useState("");
   const [description, setDescription] = useState("");
 
-  const handleCreatingProject = () => {
+  const handleCreatingProject = ({ navigation }) => {
     addDoc(collection(db, "users", auth.currentUser.uid, "projects"), {
       title: title,
       field: field,
       description: description,
     }).catch((error) => alert(error.message));
+    Alert.alert("Project Created");
   };
 
   return (

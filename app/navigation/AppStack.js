@@ -14,6 +14,7 @@ import LogoutScreen from "../screens/LogoutScreen";
 
 import TabNavigator from "./TabNavigator";
 import AuthStack from "./AuthStack";
+import TagStack from "./TagStack";
 
 const Drawer = createDrawerNavigator();
 
@@ -50,7 +51,7 @@ function AppStack() {
       />
       <Drawer.Screen
         name="Add Tags"
-        component={CreateTagScreen}
+        component={TagStack}
         options={{
           drawerIcon: ({ color }) => (
             <Ionicons name="log-out-outline" size={32} color={color} />

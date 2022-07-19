@@ -17,8 +17,12 @@ function ProjectItem({ title, field, user }) {
       <Text style={styles.posted}>Posted by: </Text>
       <Text style={styles.user}>{user}</Text>
 
-      <TouchableOpacity style={styles.button}>
+      <TouchableOpacity style={[styles.button, styles.viewButton]}>
         <Text style={styles.buttonContent}>View Project</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity style={[styles.button, styles.commentsButton]}>
+        <Text style={styles.buttonContent}>View Comments</Text>
       </TouchableOpacity>
     </SafeAreaView>
   );
@@ -84,14 +88,20 @@ const styles = StyleSheet.create({
   button: {
     padding: 6,
     position: "absolute",
-    right: 0,
-    bottom: 0,
     marginBottom: 15,
     marginRight: 20,
     borderRadius: 20,
     fontSize: 10,
     fontFamily: "OpenSans_700Bold",
     backgroundColor: "#C7755A",
+  },
+  viewButton: {
+    right: 0,
+    bottom: 0,
+  },
+  commentsButton: {
+    left: 0,
+    bottom: 0,
   },
   buttonContent: {
     fontSize: 10,

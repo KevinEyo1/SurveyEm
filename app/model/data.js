@@ -147,3 +147,41 @@ export const rewardsData = [
     id: "6",
   },
 ];
+
+export const createSurveyData = [
+  {
+    id: "1",
+    question: "How do plants grow?",
+    label: "OEQ",
+  },
+  {
+    id: "2",
+    question: "Do plants need oxygen?",
+    label: "Tf",
+  },
+
+  {
+    id: "3",
+    question: "Do plants need sunlight?",
+    label: "MCQ",
+  },
+];
+export const projectCommentsData = [
+  {
+    id: "1",
+    user: "kevin",
+    comment: "This project is quite insightful",
+  },
+  {
+    id: "2",
+    user: "alex",
+    comment: "This project can be improved",
+  },
+];
+
+export const projectDescriptionData = [
+  {
+    id: "1",
+    description: "This project is about plants",
+  },
+];

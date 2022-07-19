@@ -20,6 +20,8 @@ import {
   OpenSans_400Regular,
 } from "@expo-google-fonts/open-sans";
 
+import ProjectCommentScreen from "./app/screens/ProjectCommentScreen";
+
 export default function App() {
   let [fontsLoaded] = useFonts({
     InknutAntiqua_700Bold,
@@ -35,5 +37,6 @@ export default function App() {
     <NavigationContainer>
       <AuthStack />
     </NavigationContainer>
+    // <ProjectCommentScreen />
   );
 }
