@@ -39,7 +39,7 @@ const RewardsScreen = ({ navigation }) => {
 
   useEffect(() => {
     getRewards();
-    // getCoins();
+    getCoins();
   }, [coins]);
 
   const getRewards = () => {

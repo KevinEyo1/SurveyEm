@@ -2,11 +2,11 @@ import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
-import HomeScreen from "../screens/HomeScreen";
-import SurveyScreen from "../screens/SurveyScreen";
 import CreateStack from "./CreateStack";
-import ProjectScreen from "../screens/ProjectScreen";
 import RewardsScreen from "../screens/RewardsScreen";
+import HomeStack from "./HomeStack";
+import SurveyStack from "./SurveyStack";
+import ProjectStack from "./ProjectStack";
 
 const Tab = createBottomTabNavigator();
 
@@ -36,7 +36,7 @@ function TabNavigator({ navigation }) {
     >
       <Tab.Screen
         name="Home2"
-        component={HomeScreen}
+        component={HomeStack}
         options={{
           title: "Home",
           tabBarShowLabel: false,
@@ -46,8 +46,8 @@ function TabNavigator({ navigation }) {
         }}
       />
       <Tab.Screen
-        name="Survey"
-        component={SurveyScreen}
+        name="SurveyStack"
+        component={SurveyStack}
         options={{
           tabBarShowLabel: false,
           tabBarIcon: ({ color }) => (
@@ -67,8 +67,8 @@ function TabNavigator({ navigation }) {
         }}
       />
       <Tab.Screen
-        name="Projects"
-        component={ProjectScreen}
+        name="ProjectStack"
+        component={ProjectStack}
         options={{
           tabBarShowLabel: false,
           tabBarIcon: ({ color }) => (

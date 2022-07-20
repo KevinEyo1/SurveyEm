@@ -21,6 +21,7 @@ import { doc, setDoc } from "firebase/firestore";
 const RegisterScreen = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [username, setUsername] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [occupation, setOccupation] = useState(null);
@@ -46,9 +47,12 @@ const RegisterScreen = () => {
       .then((userCredentials) => {
         const user = userCredentials.user;
         setDoc(doc(db, "users", userCredentials.user.uid), {
+          username: username,
           firstName: firstName,
           lastName: lastName,
           occupation: occupation,
+          coins: 0,
+          ownedRewards: [],
         }).catch((error) => alert(error.message));
         console.log("Registered with: ", user.email);
       })
@@ -87,7 +91,14 @@ const RegisterScreen = () => {
           setItems={setItems}
         />
       </View>
-
+      <View style={styles.inputContainer}>
+        <TextInput
+          placeholder="Username"
+          value={username}
+          onChangeText={(text) => setUsername(text)}
+          style={styles.input}
+        />
+      </View>
       <View style={styles.inputContainer}>
         <TextInput
           placeholder="Email"

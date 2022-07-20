@@ -8,17 +8,30 @@ import {
   Modal,
   Alert,
 } from "react-native";
+import { useNavigation } from "@react-navigation/core";
 
-function ProjectItem({ title, field, user }) {
+function ProjectItem({ pid, title, tag, description, user, self }) {
+  const navigation = useNavigation();
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>{title}</Text>
-      <Text style={styles.field}>{field}</Text>
-      <Text style={styles.posted}>Posted by: </Text>
-      <Text style={styles.user}>{user}</Text>
+      <Text style={styles.tag}>{tag}</Text>
+      <Text>{description}</Text>
+      {user != "" && (
+        <View>
+          <Text style={styles.posted}>Posted by: </Text>
+          <Text style={styles.user}>{user}</Text>
+        </View>
+      )}
 
-      <TouchableOpacity style={[styles.button, styles.viewButton]}>
-        <Text style={styles.buttonContent}>View Project</Text>
+      {/* self bool do diff things */}
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() =>
+          navigation.navigate("SingleProjectSurvey", { pid: pid, self: self })
+        }
+      >
+        <Text style={styles.buttonContent}>View Surveys</Text>
       </TouchableOpacity>
 
       <TouchableOpacity style={[styles.button, styles.commentsButton]}>
@@ -46,7 +59,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: "InknutAntiqua_700Bold",
   },
-  field: {
+  tag: {
     padding: 4,
     marginTop: 15,
     marginLeft: 10,

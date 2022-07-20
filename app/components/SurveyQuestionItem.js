@@ -2,12 +2,12 @@ import { StyleSheet, Text, View, TextInput } from "react-native";
 import { React, useState } from "react";
 import { RadioButton } from "react-native-paper";
 
-function Content({ label }) {
+function Content({ qtype }) {
   const [answer, setAnswer] = useState("");
   const [checked, setChecked] = useState("");
   const [tfChecked, setTfChecked] = useState("");
 
-  if (label == "OEQ") {
+  if (qtype == "Open Ended") {
     return (
       <TextInput
         style={styles.input}
@@ -18,7 +18,7 @@ function Content({ label }) {
     );
   }
 
-  if (label == "MCQ") {
+  if (qtype == "Agree Disagree") {
     return (
       <View style={styles.container}>
         <View style={styles.newOption}>
@@ -70,8 +70,7 @@ function Content({ label }) {
       </View>
     );
   }
-
-  if (label == "Tf") {
+  if (qtype == "True False") {
     return (
       <View>
         <View style={styles.option}>
@@ -96,12 +95,12 @@ function Content({ label }) {
   }
 }
 
-const SurveyQuestionItem = ({ question, label }) => {
+const SurveyQuestionItem = ({ qtype, question }) => {
   return (
     <View>
       <Text style={{ padding: 10, fontSize: 20 }}>{question}</Text>
 
-      <Content label={label} />
+      <Content qtype={qtype} />
     </View>
   );
 };

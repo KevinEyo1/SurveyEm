@@ -1,13 +1,136 @@
-import React from "react";
+import { React, useEffect, useState } from "react";
+import { useNavigation } from "@react-navigation/core";
 import {
   Text,
   View,
   SafeAreaView,
   StyleSheet,
   TouchableOpacity,
+  Alert,
 } from "react-native";
 
-function SurveyItem({ title, field, user, points, description }) {
+import { auth, db } from "../../firebase";
+import {
+  doc,
+  setDoc,
+  getDoc,
+  addDoc,
+  collection,
+  getDocs,
+  query,
+  where,
+  updateDoc,
+  deleteDoc,
+  increment,
+} from "firebase/firestore";
+
+function SurveyItem({
+  sid,
+  title,
+  field,
+  user,
+  coinsReward,
+  description,
+  self,
+  status,
+}) {
+  const navigation = useNavigation();
+  const [bookmarked, setBookmarked] = useState(false);
+
+  useEffect(() => {
+    getBookmarked();
+  }, []);
+
+  const getBookmarked = () => {
+    setBookmarked(false);
+    const surveys = getDocs(
+      collection(db, "users", auth.currentUser.uid, "bookmarkedSurveys")
+    );
+    surveys.then((q) => {
+      q.forEach((x) => {
+        if (x.data().bsid == sid) {
+          setBookmarked(true);
+          console.log("checked");
+          return;
+        }
+      });
+    });
+  };
+
+  // functions for surveys by user
+
+  const editSurvey = () => {
+    navigation.navigate("Edit Survey", {
+      sid: sid,
+      first: false,
+    });
+  };
+
+  // const endSurvey = () => {
+  //   const surveyRef = doc(db, "surveys", sid);
+  //   updateDoc(surveyRef, { status: "Ended" });
+  //   Alert.alert("Survey ended.");
+  //   navigation.setParams({ status: "Ended" });
+  //   setChange(change + 1);
+  // };
+
+  const viewResponses = () => {
+    Alert.alert("view");
+  };
+
+  // functions for surveys by other users
+
+  const doSurvey = () => {
+    navigation.navigate("DoSurveyQuestions", { sid: sid });
+  };
+
+  const bookmarkSurvey = () => {
+    const count = coinsReward / 100;
+    navigation.navigate("BookSurveyQuestions", { sid: sid, count: count });
+  };
+
+  const RenderButtons = () => {
+    if (self) {
+      if (status == "Unpublished") {
+        return (
+          <TouchableOpacity style={styles.buttonright} onPress={editSurvey}>
+            <Text style={styles.buttonContent}>Edit Survey</Text>
+          </TouchableOpacity>
+        );
+      }
+      if (status == "Published") {
+        return (
+          <TouchableOpacity style={styles.buttonright} onPress={viewResponses}>
+            <Text style={styles.buttonContent}>View Responses</Text>
+          </TouchableOpacity>
+        );
+      }
+      if (status == "Ended") {
+        return (
+          <TouchableOpacity style={styles.buttonright} onPress={viewResponses}>
+            <Text style={styles.buttonContent}>View Responses</Text>
+          </TouchableOpacity>
+        );
+      }
+      return <Text>ERRORERRORERRORERRORERRORERROR</Text>;
+    } else {
+      // other user's surveys can only be accessed if status is "Published"
+      // status == "Published"
+      if (bookmarked) {
+        return (
+          <TouchableOpacity style={styles.buttonright} onPress={doSurvey}>
+            <Text style={styles.buttonContent}>Do Survey</Text>
+          </TouchableOpacity>
+        );
+      } else {
+        return (
+          <TouchableOpacity style={styles.buttonright} onPress={bookmarkSurvey}>
+            <Text style={styles.buttonContent}>Bookmark Survey</Text>
+          </TouchableOpacity>
+        );
+      }
+    }
+  };
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>{title}</Text>
@@ -18,12 +141,12 @@ function SurveyItem({ title, field, user, points, description }) {
       <Text style={styles.user}>{user}</Text>
 
       <Text style={styles.description}>{description}</Text>
+      <RenderButtons />
+      <Text>{status}</Text>
 
-      <TouchableOpacity style={styles.button}>
-        <Text style={styles.buttonContent}>View Survey</Text>
-      </TouchableOpacity>
-
-      <Text style={styles.points}>{points}</Text>
+      <Text style={styles.coinsReward}>{coinsReward}</Text>
+      {/* if bookmarked then display a star icon on top right of item */}
+      {bookmarked == true && <Text>bookmarked</Text>}
     </SafeAreaView>
   );
 }
@@ -78,14 +201,26 @@ const styles = StyleSheet.create({
     marginTop: 100,
     position: "absolute",
   },
-  points: {
+  coinsReward: {
     padding: 30,
     marginTop: 45,
     position: "absolute",
     alignContent: "center",
     fontSize: 12,
   },
-  button: {
+  buttonleft: {
+    padding: 6,
+    position: "absolute",
+    left: 0,
+    bottom: 0,
+    marginBottom: 15,
+    marginLeft: 20,
+    borderRadius: 20,
+    fontSize: 10,
+    fontFamily: "OpenSans_700Bold",
+    backgroundColor: "#C7755A",
+  },
+  buttonright: {
     padding: 6,
     position: "absolute",
     right: 0,

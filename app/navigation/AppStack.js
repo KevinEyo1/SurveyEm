@@ -5,7 +5,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
-import CreateTagScreen from "../screens/CreateTagScreen";
+import TagStack from "./TagStack";
 import MyRewardsScreen from "../screens/MyRewardsScreen";
 import LogoutScreen from "../screens/LogoutScreen";
 

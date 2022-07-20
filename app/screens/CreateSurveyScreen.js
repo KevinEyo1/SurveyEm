@@ -20,17 +20,21 @@ import {
   addDoc,
   collection,
   getDocs,
+  query,
+  where,
 } from "firebase/firestore";
 
 const CreateSurveyScreen = () => {
   const [title, setTitle] = useState("");
-  const [field, setField] = useState("");
   const [description, setDescription] = useState("");
+  const [newSurveyRef, setNewSurveyRef] = useState(null);
   // const [projects, setProjects] = useState([]);
   const [selectedProject, setSelectedProject] = useState(null);
   const [open, setOpen] = useState(false);
   const [items, setItems] = useState([]);
   const uid = auth.currentUser.uid;
+
+  // survey status include "Unpublished", "Published", "Ended"
 
   useEffect(() => {
     getProjects();
@@ -39,7 +43,7 @@ const CreateSurveyScreen = () => {
   const getProjects = () => {
     const list = [];
     const projectQuerySnapshot = getDocs(
-      collection(db, "users", uid, "projects")
+      query(collection(db, "projects"), where("userid", "==", uid))
     );
     projectQuerySnapshot
       .then((q) => {
@@ -47,18 +51,18 @@ const CreateSurveyScreen = () => {
           list.push({ label: project.data().title, value: project.id });
         });
         setItems(list);
-        console.log(list);
       })
       .catch((e) => alert(e.message));
   };
 
   const navigation = useNavigation();
   const handleNext = () => {
-    if (title == "" || field == "" || description == "") {
+    if (title == "" || selectedProject == null || description == "") {
       Alert.alert("Fields not completed");
     } else if (selectedProject == null) {
       Alert.alert("No Project Selected");
     } else {
+<<<<<<< HEAD
       const newSurveyRef = doc(
         collection(db, "users", uid, "projects", selectedProject, "surveys")
       );
@@ -68,6 +72,25 @@ const CreateSurveyScreen = () => {
         description: description,
       }).catch((error) => alert(error.message));
       navigation.navigate("CreateSurveyQuestions");
+=======
+      const project = getDoc(doc(db, "projects", selectedProject));
+      project.then((project) => {
+        setNewSurveyRef(doc(collection(db, "surveys")));
+        setDoc(newSurveyRef, {
+          pid: project.id,
+          title: title,
+          tag: project.data().tag,
+          description: description,
+          coinsReward: 0,
+          status: "Unpublished",
+        }).catch((e) => alert(e.message));
+        console.log(newSurveyRef.id);
+        navigation.navigate("CreateSurveyQuestions", {
+          sid: newSurveyRef.id,
+          first: true,
+        });
+      });
+>>>>>>> 7a624c8bd213fc7721381ea3fb8318525c083614
     }
   };
 
@@ -95,17 +118,8 @@ const CreateSurveyScreen = () => {
 
       <View style={styles.inputContainer}>
         <TextInput
-          placeholder="Field of Study"
-          value={field}
-          onChangeText={(text) => setField(text)}
-          style={styles.input}
-        />
-      </View>
-
-      <View style={styles.inputContainer}>
-        <TextInput
-          placeholder="Description (max 40 words)"
-          maxLength={40}
+          placeholder="Description (max 100 characters)"
+          maxLength={100}
           value={description}
           onChangeText={(text) => setDescription(text)}
           style={styles.input}
@@ -117,6 +131,7 @@ const CreateSurveyScreen = () => {
       </View>
     </KeyboardAvoidingView>
   );
+  ``;
 };
 
 export default CreateSurveyScreen;

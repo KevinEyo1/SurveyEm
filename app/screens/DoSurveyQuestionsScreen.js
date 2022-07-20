@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Pressable,
   Modal,
+  FlatList,
   Alert,
 } from "react-native";
 import { React, useState, useEffect } from "react";
@@ -28,21 +29,12 @@ import {
   increment,
 } from "firebase/firestore";
 
-const CreateSurveyQuestionsScreen = ({ route, navigation }) => {
-  const { sid, first } = route.params;
-  const [modalVisible, setModalVisible] = useState(false);
-  const [question, setQuestion] = useState("");
+const DoSurveyQuestionsScreen = ({ route, navigation }) => {
+  const { sid } = route.params;
   const [data, setData] = useState([]);
-  // setup drop down
-  const [qtype, setQtype] = useState("");
-  const [open, setOpen] = useState(false);
-  const [items, setItems] = useState([]);
 
   useEffect(() => {
-    if (!first) {
-      getInitialQuestions();
-    }
-    getQtypes();
+    getInitialQuestions();
   }, []);
 
   const getInitialQuestions = () => {
@@ -59,19 +51,6 @@ const CreateSurveyQuestionsScreen = ({ route, navigation }) => {
           // icr(idx + 1);
         });
         setData(list);
-      })
-      .catch((e) => alert(e.message));
-  };
-
-  const getQtypes = () => {
-    const typelist = [];
-    const qtypeQuerySnapshot = getDocs(collection(db, "questiontypes"));
-    qtypeQuerySnapshot
-      .then((q) => {
-        q.forEach((type) => {
-          typelist.push({ label: type.data().type, value: type.data().type });
-        });
-        setItems(typelist);
       })
       .catch((e) => alert(e.message));
   };
@@ -164,54 +143,6 @@ const CreateSurveyQuestionsScreen = ({ route, navigation }) => {
 
   return (
     <View style={styles.centeredView}>
-      <Modal
-        animationType="fade"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          setModalVisible(false);
-        }}
-      >
-        <View style={styles.modalCenter}>
-          <View style={styles.modalView}>
-            <Pressable
-              style={[styles.button, styles.buttonClose]}
-              onPress={() => {
-                setQuestion("");
-                setQtype("");
-                setModalVisible(false);
-              }}
-            >
-              <Text style={styles.textClose}>X</Text>
-            </Pressable>
-            <View style={styles.inputContainer}>
-              <DropDownPicker
-                open={open}
-                value={qtype}
-                items={items}
-                setOpen={setOpen}
-                setValue={setQtype}
-                setItems={setItems}
-              />
-            </View>
-            <View style={styles.inputContainer}>
-              <TextInput
-                placeholder="Question"
-                value={question}
-                onChangeText={(text) => setQuestion(text)}
-                style={styles.input}
-              />
-            </View>
-
-            <TouchableOpacity
-              style={[styles.button, styles.buttonAdd]}
-              onPress={addQuestion}
-            >
-              <Text style={styles.textStyle}>Add</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
       <FlatList
         data={data}
         renderItem={renderItem}
@@ -236,17 +167,6 @@ const CreateSurveyQuestionsScreen = ({ route, navigation }) => {
       >
         <Text style={styles.textStyle}>Publish Survey</Text>
       </Pressable>
-
-      <View style={styles.inputContainer}>
-        {true == true &&
-          createSurveyData.map((item) => (
-            <SurveyQuestionItem
-              key={item.id}
-              question={item.question}
-              label={item.label}
-            />
-          ))}
-      </View>
     </View>
   );
 };
@@ -325,4 +245,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CreateSurveyQuestionsScreen;
+export default DoSurveyQuestionsScreen;
