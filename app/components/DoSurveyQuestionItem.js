@@ -2,7 +2,7 @@ import { StyleSheet, Text, View, TextInput } from "react-native";
 import { React, useState } from "react";
 import { RadioButton } from "react-native-paper";
 
-function Content({ qtype, answers }) {
+function Content({ qtype, updateAnswers, index }) {
   const [answer, setAnswer] = useState("");
   const [checked, setChecked] = useState("");
   const [tfChecked, setTfChecked] = useState("");
@@ -13,7 +13,10 @@ function Content({ qtype, answers }) {
         style={styles.input}
         placeholder="Answer"
         value={answer}
-        onChangeText={(text) => setAnswer(text)}
+        onChangeText={(text) => {
+          setAnswer(text);
+          updateAnswers(text, index);
+        }}
       />
     );
   }
@@ -26,7 +29,10 @@ function Content({ qtype, answers }) {
           <RadioButton
             value="Strongly Disagree"
             status={checked === "Strongly Disagree" ? "checked" : "unchecked"}
-            onPress={() => setChecked("Strongly Disagree")}
+            onPress={() => {
+              setChecked("Strongly Disagree");
+              updateAnswers("1", index);
+            }}
           />
           <Text>1</Text>
         </View>
@@ -35,7 +41,10 @@ function Content({ qtype, answers }) {
           <RadioButton
             value="Disagree"
             status={checked === "Disagree" ? "checked" : "unchecked"}
-            onPress={() => setChecked("Disagree")}
+            onPress={() => {
+              setChecked("Disagree");
+              updateAnswers("2", index);
+            }}
           />
           <Text>2</Text>
         </View>
@@ -44,7 +53,10 @@ function Content({ qtype, answers }) {
           <RadioButton
             value="Neutral"
             status={checked === "Neutral" ? "checked" : "unchecked"}
-            onPress={() => setChecked("Neutral")}
+            onPress={() => {
+              setChecked("Neutral");
+              updateAnswers("3", index);
+            }}
           />
           <Text>3</Text>
         </View>
@@ -53,7 +65,10 @@ function Content({ qtype, answers }) {
           <RadioButton
             value="Agree"
             status={checked === "Agree" ? "checked" : "unchecked"}
-            onPress={() => setChecked("Agree")}
+            onPress={() => {
+              setChecked("Agree");
+              updateAnswers("4", index);
+            }}
           />
           <Text>4</Text>
         </View>
@@ -63,7 +78,10 @@ function Content({ qtype, answers }) {
           <RadioButton
             value="Strongly Agree"
             status={checked === "Strongly Agree" ? "checked" : "unchecked"}
-            onPress={() => setChecked("Strongly Agree")}
+            onPress={() => {
+              setChecked("Strongly Agree");
+              updateAnswers("5", index);
+            }}
           />
           <Text>5</Text>
         </View>
@@ -77,7 +95,10 @@ function Content({ qtype, answers }) {
           <RadioButton
             value="True"
             status={tfChecked === "True" ? "checked" : "unchecked"}
-            onPress={() => setTfChecked("True")}
+            onPress={() => {
+              setTfChecked("True");
+              updateAnswers("true", index);
+            }}
           />
           <Text>True</Text>
         </View>
@@ -86,7 +107,10 @@ function Content({ qtype, answers }) {
           <RadioButton
             value="False"
             status={tfChecked === "False" ? "checked" : "unchecked"}
-            onPress={() => setTfChecked("False")}
+            onPress={() => {
+              setTfChecked("False");
+              updateAnswers("false", index);
+            }}
           />
           <Text>False</Text>
         </View>
@@ -95,17 +119,17 @@ function Content({ qtype, answers }) {
   }
 }
 
-const SurveyQuestionItem = ({ qtype, question }) => {
+const DoSurveyQuestionItem = ({ qtype, question, updateAnswers, index }) => {
   return (
     <View>
       <Text style={{ padding: 10, fontSize: 20 }}>{question}</Text>
 
-      <Content qtype={qtype} />
+      <Content qtype={qtype} updateAnswers={updateAnswers} index={index} />
     </View>
   );
 };
 
-export default SurveyQuestionItem;
+export default DoSurveyQuestionItem;
 
 const styles = StyleSheet.create({
   input: {

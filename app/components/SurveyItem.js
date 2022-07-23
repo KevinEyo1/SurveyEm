@@ -36,6 +36,7 @@ function SurveyItem({
 }) {
   const navigation = useNavigation();
   const [bookmarked, setBookmarked] = useState(false);
+  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
     getBookmarked();
@@ -50,10 +51,11 @@ function SurveyItem({
       q.forEach((x) => {
         if (x.data().bsid == sid) {
           setBookmarked(true);
-          console.log("checked");
+          setLoaded(true);
           return;
         }
       });
+      setLoaded(true);
     });
   };
 
@@ -75,13 +77,14 @@ function SurveyItem({
   // };
 
   const viewResponses = () => {
-    Alert.alert("view");
+    navigation.navigate("View Responses", { sid: sid, count: count });
   };
 
   // functions for surveys by other users
 
   const doSurvey = () => {
-    navigation.navigate("DoSurveyQuestions", { sid: sid });
+    const count = coinsReward / 100;
+    navigation.navigate("DoSurveyQuestions", { sid: sid, count: count });
   };
 
   const bookmarkSurvey = () => {
@@ -133,20 +136,25 @@ function SurveyItem({
   };
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>{title}</Text>
+      {loaded != true && <Text>Loading...</Text>}
+      {loaded == true && (
+        <View>
+          <Text style={styles.title}>{title}</Text>
 
-      <Text style={styles.field}>{field}</Text>
+          <Text style={styles.field}>{field}</Text>
 
-      <Text style={styles.posted}>Posted by: </Text>
-      <Text style={styles.user}>{user}</Text>
+          <Text style={styles.posted}>Posted by: </Text>
+          <Text style={styles.user}>{user}</Text>
 
-      <Text style={styles.description}>{description}</Text>
-      <RenderButtons />
-      <Text>{status}</Text>
+          <Text style={styles.description}>{description}</Text>
+          <RenderButtons />
+          {self == true && <Text>{status}</Text>}
 
-      <Text style={styles.coinsReward}>{coinsReward}</Text>
-      {/* if bookmarked then display a star icon on top right of item */}
-      {bookmarked == true && <Text>bookmarked</Text>}
+          <Text style={styles.coinsReward}>{coinsReward}</Text>
+          {/* if bookmarked then display a star icon on top right of item */}
+          {bookmarked == true && <Text>Bookmarked</Text>}
+        </View>
+      )}
     </SafeAreaView>
   );
 }

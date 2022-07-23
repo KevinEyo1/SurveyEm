@@ -12,7 +12,14 @@ import DropDownPicker from "react-native-dropdown-picker";
 
 import { onAuthStateChanged } from "firebase/auth";
 import { auth, db } from "../../firebase";
-import { doc, setDoc, addDoc, collection, getDocs } from "firebase/firestore";
+import {
+  doc,
+  setDoc,
+  addDoc,
+  collection,
+  getDocs,
+  getDoc,
+} from "firebase/firestore";
 
 const CreateProjectScreen = ({ navigation }) => {
   const [title, setTitle] = useState("");
@@ -47,7 +54,7 @@ const CreateProjectScreen = ({ navigation }) => {
           title: title,
           tag: tag,
           description: description,
-          username: user.data().username,
+          username: q.data().username,
         }).catch((error) => alert(error.message));
         Alert.alert("Project created.");
         navigation.popToTop();

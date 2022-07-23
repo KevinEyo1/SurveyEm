@@ -8,6 +8,7 @@ import {
   TextInput,
   TouchableOpacity,
   FlatList,
+  ActivityIndicator,
 } from "react-native";
 
 import SurveyItem from "../components/SurveyItem";
@@ -27,6 +28,7 @@ import {
   limitToLast,
 } from "firebase/firestore";
 import { useTheme } from "react-native-paper";
+import { async } from "@firebase/util";
 
 const SurveyScreen = ({ navigation }) => {
   const [surveyItems, setSurveyItems] = useState([]);
@@ -39,29 +41,36 @@ const SurveyScreen = ({ navigation }) => {
 
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
-      getSurveys();
       getBookmarks();
+      getSurveys();
     });
     return unsubscribe;
   }, [navigation]);
 
-  // useEffect(() => {
-  //   getBookmarkedSurveys();
-  // }, [bookmarks]);
-
-  const getSurveys = () => {
+  const getSurveys = async () => {
     const list = [];
-    const surveyQuerySnapshot = getDocs(
+    console.log("sqqssq");
+    const surveyQuerySnapshot = await getDocs(
       query(
         collection(db, "surveys"),
         where("uid", "!=", uid),
         where("status", "==", "Published")
       )
     );
-
-    surveyQuerySnapshot
-      .then((q) => {
-        q.forEach((survey) => {
+    const bmRef = collection(
+      db,
+      "users",
+      auth.currentUser.uid,
+      "bookmarkedSurveys"
+    );
+    const result = surveyQuerySnapshot.docs.map((survey) => {
+      const q = query(bmRef, where("bsid", "==", survey.id));
+      const qSnap = getDocs(q);
+      qSnap.then((q) => {
+        // to display, survey must not be both in bookmarked and submitted set as true
+        // not bookmarked AND not submitted
+        console.log(q.docs.length);
+        if (q.docs.length == 0) {
           list.push({
             id: survey.id,
             title: survey.data().title,
@@ -70,43 +79,65 @@ const SurveyScreen = ({ navigation }) => {
             coinsReward: survey.data().coinsReward,
             status: survey.data().status,
           });
-        });
-        setSurveyItems(list);
-        setLoaded(true);
-      })
-      .catch((e) => alert(e.message));
-  };
-
-  const getBookmarks = () => {
-    const list = [];
-    const bookmarkSnapshot = getDocs(
-      collection(db, "users", uid, "bookmarkedSurveys")
-    );
-    bookmarkSnapshot.map((x) => {
-      const survey = getDoc(doc(db, "surveys", x.data().bsid));
-      survey.then((survey) => {
-        if (survey.data().status == "Published") {
-          list.push({
-            id: survey.id,
-            title: survey.data().title,
-            tag: survey.data().tag,
-            description: survey.data().description,
-            coinsReward: survey.data().coinsReward,
-            status: survey.data().status,
+        } else if (q.docs.length != 0) {
+          q.docs.forEach((p) => {
+            if (p.data().submitted == false) {
+              list.push({
+                id: survey.id,
+                title: survey.data().title,
+                tag: survey.data().tag,
+                description: survey.data().description,
+                coinsReward: survey.data().coinsReward,
+                status: survey.data().status,
+              });
+            }
           });
         }
       });
     });
+    const delay = async (ms) => new Promise((res) => setTimeout(res, ms));
+    await delay(2000);
+    setSurveyItems(list);
+    setLoaded(true);
+  };
+
+  const getBookmarks = async () => {
+    const list = [];
+    const bookmarkSnapshot = getDocs(
+      collection(db, "users", uid, "bookmarkedSurveys")
+    );
+    bookmarkSnapshot.then((b) =>
+      b.docs.map((x) => {
+        const survey = getDoc(doc(db, "surveys", x.data().bsid));
+        survey.then((survey) => {
+          if (
+            survey.data().status == "Published" &&
+            x.data().submitted == false
+          ) {
+            list.push({
+              id: survey.id,
+              title: survey.data().title,
+              tag: survey.data().tag,
+              description: survey.data().description,
+              coinsReward: survey.data().coinsReward,
+              status: survey.data().status,
+            });
+          }
+        });
+      })
+    );
+    const delay = async (ms) => new Promise((res) => setTimeout(res, ms));
+    await delay(2000);
     setBookmarkedItems(list);
     setBookLoaded(true);
-    // bookmarkSnapshot
-    //   .then((q) => {
-    //     q.forEach((x) => {
+    // bookmarkSnapshot.docs.map((d) => {
+
     //       list.push({
     //         bsid: x.data().bsid,
     //       });
     //     });
-    //     setBookmarks(list);
+    //     setBookmarkedItems(list);
+    //     setBookLoaded(true);
     //   })
     //   .catch((e) => alert(e.message));
   };
@@ -121,7 +152,7 @@ const SurveyScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
-      <View>
+      <View style={{ padding: 15, paddingBottom: 0 }}>
         <CustomSwitch
           selectionMode={1}
           option1="Browse Surveys"
