@@ -28,7 +28,7 @@ import {
   increment,
 } from "firebase/firestore";
 
-const BookSurveyQuestionsScreen = ({ route, navigation }) => {
+const ViewResponsesScreen = ({ route, navigation }) => {
   const { sid, count } = route.params;
   const [data, setData] = useState([]);
 
@@ -42,11 +42,35 @@ const BookSurveyQuestionsScreen = ({ route, navigation }) => {
     iQuerySnapshot
       .then((q) => {
         q.forEach((i) => {
-          list.push({
-            id: i.id,
-            question: i.data().question,
-            qtype: i.data().qtype,
-          });
+          // if any of 3 states then add to list accordingly (can array store different items?)
+          const qt = i.data().qtype;
+          if (qt == "Open Ended") {
+            list.push({
+              id: i.id,
+              question: i.data().question,
+              qtype: qt,
+              responses: i.data().responses,
+            });
+          } else if (qt == "Agree Disagree") {
+            list.push({
+              id: i.id,
+              question: i.data().question,
+              qtype: qt,
+              sd: i.data().sd,
+              d: i.data().d,
+              n: i.data().n,
+              a: i.data().a,
+              sa: i.data().sa,
+            });
+          } else if (qt == "True False") {
+            list.push({
+              id: i.id,
+              question: i.data().question,
+              qtype: qt,
+              trueCount: i.data().trueCount,
+              falseCount: i.data().falseCount,
+            });
+          }
         });
         setData(list);
       })
@@ -59,6 +83,24 @@ const BookSurveyQuestionsScreen = ({ route, navigation }) => {
         qtype={item.qtype}
         question={item.question}
       ></SurveyQuestionItem>
+      {/* {item.qtype == "Open Ended" && (
+        <OEResultsItem responses={item.responses} />
+      )}
+      {item.qtype == "Agree Disagree" && (
+        <ADResultsItem
+          sd={item.sd}
+          d={item.d}
+          n={item.n}
+          a={item.a}
+          sa={item.sa}
+        />
+      )}
+      {item.qtype == "True False" && (
+        <TFResultsItem
+          trueCount={item.trueCount}
+          falseCount={item.falseCount}
+        />
+      )} */}
     </View>
   );
 
@@ -72,16 +114,10 @@ const BookSurveyQuestionsScreen = ({ route, navigation }) => {
     />
   );
 
-  const bookmarkSurvey = () => {
-    const docRef = addDoc(
-      collection(db, "users", auth.currentUser.uid, "bookmarkedSurveys"),
-      {
-        bsid: sid,
-        submitted: false,
-      }
-    );
-    Alert.alert("Survey Bookmarked. Go to Survey Page to see it.");
-    navigation.replace("Surveys");
+  const endSurvey = () => {
+    const surveyRef = doc(db, "surveys", sid);
+    updateDoc(surveyRef, { published: "Ended" });
+    navigation.popToTop();
   };
 
   return (
@@ -92,11 +128,8 @@ const BookSurveyQuestionsScreen = ({ route, navigation }) => {
         keyExtractor={(item) => item.id}
         ItemSeparatorComponent={renderSeparator}
       />
-      <Pressable
-        style={[styles.button, styles.buttonOpen]}
-        onPress={bookmarkSurvey}
-      >
-        <Text style={styles.textStyle}>Bookmark Survey</Text>
+      <Pressable style={[styles.button, styles.buttonOpen]} onPress={endSurvey}>
+        <Text style={styles.textStyle}>End Survey</Text>
       </Pressable>
       <Pressable
         style={[styles.button, styles.buttonOpen]}
@@ -182,4 +215,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default BookSurveyQuestionsScreen;
+export default ViewResponsesScreen;

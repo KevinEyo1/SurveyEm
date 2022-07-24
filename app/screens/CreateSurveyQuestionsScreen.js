@@ -114,7 +114,30 @@ const CreateSurveyQuestionsScreen = ({ route, navigation }) => {
     if (question.length != 0 && qtype.length != 0) {
       // add to db
       const questionRef = doc(collection(db, "surveys", sid, "questions"));
-      setDoc(questionRef, { question: question, qtype: qtype });
+      if (qtype == "Open Ended") {
+        setDoc(questionRef, {
+          question: question,
+          qtype: qtype,
+          responses: [],
+        });
+      } else if (qtype == "Agree Disagree") {
+        setDoc(questionRef, {
+          question: question,
+          qtype: qtype,
+          sd: 0,
+          d: 0,
+          n: 0,
+          a: 0,
+          sa: 0,
+        });
+      } else if (qtype == "True False") {
+        setDoc(questionRef, {
+          question: question,
+          qtype: qtype,
+          trueCount: 0,
+          falseCount: 0,
+        });
+      }
       const surveyRef = doc(db, "surveys", sid);
       updateDoc(surveyRef, { coinsReward: increment(100) });
       // add to flatlist
@@ -146,7 +169,7 @@ const CreateSurveyQuestionsScreen = ({ route, navigation }) => {
   };
 
   const finishEditing = () => {
-    navigation.popToTop();
+    navigation.goBack();
   };
 
   const publishSurvey = () => {
@@ -158,7 +181,7 @@ const CreateSurveyQuestionsScreen = ({ route, navigation }) => {
     } else {
       updateDoc(surveyRef, { status: "Published" });
       Alert.alert("Survey published.");
-      navigation.popToTop();
+      navigation.goBack();
     }
   };
 

@@ -39,36 +39,51 @@ const SingleProjectSurveyScreen = ({ route, navigation }) => {
 
   const getSurveys = () => {
     const list = [];
-    const surveyQuerySnapshot = null;
     if (self) {
-      surveyQuerySnapshot = getDocs(
+      const surveyQuerySnapshot = getDocs(
         query(collection(db, "surveys"), where("pid", "==", pid))
       );
+      surveyQuerySnapshot
+        .then((q) => {
+          q.forEach((survey) => {
+            list.push({
+              id: survey.id,
+              title: survey.data().title,
+              tag: survey.data().tag,
+              description: survey.data().description,
+              coinsReward: survey.data().coinsReward,
+              status: survey.data().status,
+            });
+          });
+          setSurveyItems(list);
+          setLoaded(true);
+        })
+        .catch((e) => alert(e.message));
     } else {
-      surveyQuerySnapshot = getDocs(
+      const surveyQuerySnapshot = getDocs(
         query(
           collection(db, "surveys"),
           where("pid", "==", pid),
           where("status", "==", "Published")
         )
       );
-    }
-    surveyQuerySnapshot
-      .then((q) => {
-        q.forEach((survey) => {
-          list.push({
-            id: survey.id,
-            title: survey.data().title,
-            tag: survey.data().tag,
-            description: survey.data().description,
-            coinsReward: survey.data().coinsReward,
-            status: survey.data().status,
+      surveyQuerySnapshot
+        .then((q) => {
+          q.forEach((survey) => {
+            list.push({
+              id: survey.id,
+              title: survey.data().title,
+              tag: survey.data().tag,
+              description: survey.data().description,
+              coinsReward: survey.data().coinsReward,
+              status: survey.data().status,
+            });
           });
-        });
-        setSurveyItems(list);
-        setLoaded(true);
-      })
-      .catch((e) => alert(e.message));
+          setSurveyItems(list);
+          setLoaded(true);
+        })
+        .catch((e) => alert(e.message));
+    }
   };
 
   return (

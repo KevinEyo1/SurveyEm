@@ -31,7 +31,7 @@ export default function CustomSwitch({
         onPress={() => updateSwitchData(1)}
         style={{
           flex: 1,
-          backgroundColor: getSelectionMode == 1 ? "#AD40AF" : "#e4e4e4",
+          backgroundColor: getSelectionMode == 1 ? "#4e74b5" : "#e4e4e4",
           borderRadius: 10,
           justifyContent: "center",
           alignItems: "center",
@@ -39,9 +39,8 @@ export default function CustomSwitch({
       >
         <Text
           style={{
-            color: getSelectionMode == 1 ? "white" : "#AD40AF",
+            color: getSelectionMode == 1 ? "white" : "#4e74b5",
             fontSize: 14,
-            fontFamily: "Roboto-Medium",
           }}
         >
           {option1}
@@ -52,7 +51,7 @@ export default function CustomSwitch({
         onPress={() => updateSwitchData(2)}
         style={{
           flex: 1,
-          backgroundColor: getSelectionMode == 2 ? "#AD40AF" : "#e4e4e4",
+          backgroundColor: getSelectionMode == 2 ? "#4e74b5" : "#e4e4e4",
           borderRadius: 10,
           justifyContent: "center",
           alignItems: "center",
@@ -60,9 +59,8 @@ export default function CustomSwitch({
       >
         <Text
           style={{
-            color: getSelectionMode == 2 ? "white" : "#AD40AF",
+            color: getSelectionMode == 2 ? "white" : "#4e74b5",
             fontSize: 14,
-            fontFamily: "Roboto-Medium",
           }}
         >
           {option2}

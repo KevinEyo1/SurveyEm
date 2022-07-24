@@ -13,7 +13,7 @@ import {
 import { React, useState, useEffect } from "react";
 import DropDownPicker from "react-native-dropdown-picker";
 
-import SurveyQuestionItem from "../components/SurveyQuestionItem";
+import DoSurveyQuestionItem from "../components/DoSurveyQuestionItem";
 import { auth, db } from "../../firebase";
 import {
   doc,
@@ -27,48 +27,67 @@ import {
   updateDoc,
   deleteDoc,
   increment,
+  arrayUnion,
 } from "firebase/firestore";
 
 const DoSurveyQuestionsScreen = ({ route, navigation }) => {
-  const { sid } = route.params;
+  const { sid, count } = route.params;
   const [data, setData] = useState([]);
+  const [answers, setAnswers] = useState([]);
+  const [answerID, setAnswerID] = useState([]);
 
   useEffect(() => {
+    getEmptyArray();
     getInitialQuestions();
   }, []);
 
   const getInitialQuestions = () => {
     const list = [];
+    const idlist = [];
     const iQuerySnapshot = getDocs(collection(db, "surveys", sid, "questions"));
     iQuerySnapshot
       .then((q) => {
+        var ind = 0;
         q.forEach((i) => {
           list.push({
             id: i.id,
             question: i.data().question,
             qtype: i.data().qtype,
+            index: ind,
           });
-          // icr(idx + 1);
+          var newArray = answerID;
+          newArray[ind] = { id: i.id, qtype: i.data().qtype };
+          setAnswerID(newArray);
+          ind = ind + 1;
         });
         setData(list);
       })
       .catch((e) => alert(e.message));
   };
 
+  const getEmptyArray = () => {
+    const ans = Array.apply(null, Array(count));
+    console.log(ans);
+    setAnswers(ans);
+    const anss = Array.apply(null, Array(count));
+    setAnswerID(anss);
+  };
+
+  const updateAnswers = (value, index) => {
+    var newArray = answers;
+    newArray[index] = value;
+    setAnswers(newArray);
+    console.log(answers);
+  };
+
   const renderItem = ({ item }) => (
     <View>
-      <SurveyQuestionItem
+      <DoSurveyQuestionItem
         qtype={item.qtype}
         question={item.question}
-      ></SurveyQuestionItem>
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => {
-          deleteQuestion(item);
-        }}
-      >
-        <Text>Delete</Text>
-      </TouchableOpacity>
+        updateAnswers={updateAnswers}
+        index={item.index}
+      ></DoSurveyQuestionItem>
     </View>
   );
 
@@ -82,62 +101,65 @@ const DoSurveyQuestionsScreen = ({ route, navigation }) => {
     />
   );
 
-  const addQuestion = () => {
-    console.log(data);
-    if (question.length == 0) {
-      Alert.alert("Missing Question");
-    }
-    if (qtype.length == 0) {
-      Alert.alert("Missing question type");
-    }
-    if (question.length != 0 && qtype.length != 0) {
-      // add to db
-      const questionRef = doc(collection(db, "surveys", sid, "questions"));
-      setDoc(questionRef, { question: question, qtype: qtype });
-      const surveyRef = doc(db, "surveys", sid);
-      updateDoc(surveyRef, { coinsReward: increment(100) });
-      // add to flatlist
-      var newArray = [
-        ...data,
-        { id: questionRef.id, question: question, qtype: qtype },
-      ];
-      // icr(idx + 1);
-      setQuestion("");
-      setQtype("");
-      setData(newArray);
-      setModalVisible(false);
-    }
-  };
+  const submitSurvey = () => {
+    var filled = true;
+    answers.map((x) => {
+      if (x == null || x == "") {
+        filled = false;
+      }
+    });
+    if (filled) {
+      var count = 0;
+      console.log(answerID);
+      answerID.forEach((question) => {
+        const val = answers[count];
+        const qRef = doc(db, "surveys", sid, "questions", question.id);
+        if (question.qtype == "Open Ended") {
+          updateDoc(qRef, { responses: arrayUnion(val) });
+        } else if (question.qtype == "Agree Disagree") {
+          if (val == "1") {
+            updateDoc(qRef, { sd: increment(1) });
+          } else if (val == "2") {
+            updateDoc(qRef, { d: increment(1) });
+          } else if (val == "3") {
+            updateDoc(qRef, { n: increment(1) });
+          } else if (val == "4") {
+            updateDoc(qRef, { a: increment(1) });
+          } else if (val == "5") {
+            updateDoc(qRef, { sa: increment(1) });
+          }
+        } else if (question.qtype == "True False") {
+          if (val == true) {
+            updateDoc(qRef, { trueCount: increment(1) });
+          } else if (val == false) {
+            updateDoc(qRef, { falseCount: increment(1) });
+          }
+        }
+        count = count + 1;
+      });
+      const coins = count * 100;
+      const userRef = doc(db, "users", auth.currentUser.uid);
+      updateDoc(userRef, { coins: increment(coins) });
 
-  const deleteQuestion = (item) => {
-    console.log("dele");
-    // delete from db
-    deleteDoc(doc(db, "surveys", sid, "questions", item.id));
-    const surveyRef = doc(db, "surveys", sid);
-    updateDoc(surveyRef, { coinsReward: increment(-100) });
-    // delete from flatlist
-    var tempArray = [...data];
-    var index = tempArray.indexOf(item);
-    if (index != -1) {
-      tempArray.splice(index, 1);
-    }
-    setData(tempArray);
-  };
-
-  const finishEditing = () => {
-    navigation.popToTop();
-  };
-
-  const publishSurvey = () => {
-    const surveyRef = doc(db, "surveys", sid);
-    if (data.length == 0) {
-      Alert.alert(
-        'No questions in survey yet, click "Edit Survey" to add questions.'
+      // set bookmark as submitted
+      const bmRef = collection(
+        db,
+        "users",
+        auth.currentUser.uid,
+        "bookmarkedSurveys"
       );
-    } else {
-      updateDoc(surveyRef, { status: "Published" });
-      Alert.alert("Survey published.");
+      const q = query(bmRef, where("bsid", "==", sid));
+      const qSnap = getDocs(q);
+      qSnap.then((q) => {
+        q.forEach((x) => {
+          updateDoc(x.ref, { submitted: true });
+        });
+      });
+
+      Alert.alert("Survey answers submitted, coins rewarded!");
       navigation.popToTop();
+    } else {
+      Alert.alert("Not all questions answered. Please answer them.");
     }
   };
 
@@ -151,21 +173,15 @@ const DoSurveyQuestionsScreen = ({ route, navigation }) => {
       />
       <Pressable
         style={[styles.button, styles.buttonOpen]}
-        onPress={() => setModalVisible(true)}
+        onPress={submitSurvey}
       >
-        <Text style={styles.textStyle}>Add Question</Text>
+        <Text style={styles.textStyle}>Submit Survey</Text>
       </Pressable>
       <Pressable
         style={[styles.button, styles.buttonOpen]}
-        onPress={finishEditing}
+        onPress={() => navigation.goBack()}
       >
-        <Text style={styles.textStyle}>Finish Editing</Text>
-      </Pressable>
-      <Pressable
-        style={[styles.button, styles.buttonOpen]}
-        onPress={publishSurvey}
-      >
-        <Text style={styles.textStyle}>Publish Survey</Text>
+        <Text style={styles.textStyle}>Back to Surveys</Text>
       </Pressable>
     </View>
   );

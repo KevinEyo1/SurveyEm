@@ -66,6 +66,7 @@ const CreateSurveyScreen = () => {
       project.then((project) => {
         setNewSurveyRef(doc(collection(db, "surveys")));
         setDoc(newSurveyRef, {
+          uid: auth.currentUser.uid,
           pid: project.id,
           title: title,
           tag: project.data().tag,
