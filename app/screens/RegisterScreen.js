@@ -32,6 +32,9 @@ const RegisterScreen = () => {
   ]);
   const navigation = useNavigation();
 
+  const siteKey = "6LdSTAkhAAAAALZ5QFfQ975nkayY96nFYk0SVFYD";
+  const baseUrl = "localhost";
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {

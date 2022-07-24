@@ -62,17 +62,6 @@ const CreateSurveyScreen = () => {
     } else if (selectedProject == null) {
       Alert.alert("No Project Selected");
     } else {
-<<<<<<< HEAD
-      const newSurveyRef = doc(
-        collection(db, "users", uid, "projects", selectedProject, "surveys")
-      );
-      setDoc(newSurveyRef, {
-        title: title,
-        field: field,
-        description: description,
-      }).catch((error) => alert(error.message));
-      navigation.navigate("CreateSurveyQuestions");
-=======
       const project = getDoc(doc(db, "projects", selectedProject));
       project.then((project) => {
         setNewSurveyRef(doc(collection(db, "surveys")));
@@ -90,7 +79,6 @@ const CreateSurveyScreen = () => {
           first: true,
         });
       });
->>>>>>> 7a624c8bd213fc7721381ea3fb8318525c083614
     }
   };
 

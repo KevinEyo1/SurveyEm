@@ -32,11 +32,11 @@ function RewardsItem({ title, description, coinsCost, tnc, redeem }) {
         <View style={styles.modalCenter}>
           <View style={styles.modalView}>
             <View style={styles.inputContainer}>
-              {/* <Text style={styles.tncText}>{tnc}</Text> */}
-              {true == true &&
+              <Text style={styles.tncText}>{tnc}</Text>
+              {/* {true == true &&
                 tnc.forEach((condition) => (
                   <Text style={styles.tncText}>{condition}</Text>
-                ))}
+                ))} */}
             </View>
 
             <TouchableOpacity
@@ -152,7 +152,9 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     textAlign: "center",
   },
-  tncText: {},
+  tncText: {
+    marginBottom: 20,
+  },
 });
 
 export default RewardsItem;

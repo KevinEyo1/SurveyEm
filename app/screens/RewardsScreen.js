@@ -64,22 +64,30 @@ const RewardsScreen = ({ navigation }) => {
 
   // get initial user coins (either only call once, or call after every update to coins in db)
   const getCoins = () => {
-    const coinsCount = getDoc(doc(db, "users", uid)).data().coins;
-    setCoins(coinsCount);
+    const userQuery = getDoc(query(doc(db, "users", uid)));
+    userQuery.then((user) => {
+      setCoins(user.data().coins);
+    });
   };
 
   // set user coins to new value and update user owned rewards
-  const redeemUpdate = () => {
-    // calc const newCount (leave to u to calc new updated coin count)
-    const newCount = coinsCount - coinsCost;
-    const userRef = doc(db, "users", uid);
-    updateDoc(userRef, {
-      coins: newCount,
-      ownedRewards: arrayUnion(claimedReward),
-    });
-    setCoins(newCount);
-    Alert.alert("Reward claimed.");
-    setClaimedReward("");
+  const redeemUpdate = (coinsCost, title) => {
+    if (coins < coinsCost) {
+      Alert.alert("Not enough coins.");
+    } else {
+      const currentCoins = coins;
+      setCoins(currentCoins - coinsCost);
+      console.log(coins);
+
+      const userRef = doc(db, "users", uid);
+      updateDoc(userRef, {
+        coins: coins,
+        ownedRewards: arrayUnion(claimedReward),
+      });
+      setCoins(coins);
+      Alert.alert("Reward claimed.");
+      setClaimedReward({ title });
+    }
   };
 
   return (
@@ -97,7 +105,7 @@ const RewardsScreen = ({ navigation }) => {
                 description={reward.description}
                 coinsCost={reward.coinsCost}
                 tnc={reward.tnc}
-                redeem={redeemUpdate}
+                redeem={() => redeemUpdate(reward.coinsCost, reward.title)}
                 // claimed={reward.claimed}
               />
             ))}

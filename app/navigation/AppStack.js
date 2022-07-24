@@ -14,7 +14,6 @@ import LogoutScreen from "../screens/LogoutScreen";
 
 import TabNavigator from "./TabNavigator";
 import AuthStack from "./AuthStack";
-import TagStack from "./TagStack";
 
 const Drawer = createDrawerNavigator();
 

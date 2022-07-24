@@ -38,15 +38,6 @@ const CreateProjectScreen = ({ navigation }) => {
       .catch((e) => alert(e.message));
   };
 
-<<<<<<< HEAD
-  const handleCreatingProject = ({ navigation }) => {
-    addDoc(collection(db, "users", auth.currentUser.uid, "projects"), {
-      title: title,
-      field: field,
-      description: description,
-    }).catch((error) => alert(error.message));
-    Alert.alert("Project Created");
-=======
   const handleCreatingProject = () => {
     const user = getDoc(doc(db, "users", auth.currentUser.uid));
     user
@@ -62,7 +53,6 @@ const CreateProjectScreen = ({ navigation }) => {
         navigation.popToTop();
       })
       .catch((e) => alert(e.message));
->>>>>>> 7a624c8bd213fc7721381ea3fb8318525c083614
   };
 
   return (

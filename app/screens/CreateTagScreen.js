@@ -11,11 +11,7 @@ const CreateTagScreen = ({ navigation }) => {
         <Text style={styles.buttonText}>School</Text>
       </TouchableOpacity>
       <TouchableOpacity
-<<<<<<< HEAD
         onPress={() => navigation.navigate("WorkTag")}
-=======
-        // onPress={}
->>>>>>> 7a624c8bd213fc7721381ea3fb8318525c083614
         style={[styles.button, styles.buttonOutline]}
       >
         <Text style={styles.buttonOutlineText}>Work</Text>

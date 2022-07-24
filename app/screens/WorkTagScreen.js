@@ -9,8 +9,12 @@ import { React, useState, useEffect, useCallback } from "react";
 
 import DropDownPicker from "react-native-dropdown-picker";
 
+import * as DocumentPicker from "expo-document-picker";
+
 import { auth, db } from "../../firebase";
 import { getDocs, collection } from "firebase/firestore";
+
+import { getStorage, ref, uploadBytes } from "firebase/storage";
 
 const WorkTagScreen = ({ navigation }) => {
   const [orgOpen, setOrgOpen] = useState(false);
@@ -60,10 +64,15 @@ const WorkTagScreen = ({ navigation }) => {
     setOrgOpen(false);
   });
 
+  const [doc, setDoc] = useState();
+  const storage = getStorage();
+  const storageRef = ref(storage, "Education Certificates");
+
   useEffect(() => {
     getTags();
     getPos();
     getOrg();
+    getStorage();
   }, []);
 
   DropDownPicker.setMode("BADGE");
@@ -115,6 +124,52 @@ const WorkTagScreen = ({ navigation }) => {
         console.log(list);
       })
       .catch((e) => alert(e.message));
+  };
+
+  const pickDocument = async () => {
+    let result = await DocumentPicker.getDocumentAsync({
+      type: "*/*",
+      copyToCacheDirectory: true,
+    }).then((response) => {
+      if (response.type == "success") {
+        let { name, size, uri } = response;
+        let nameParts = name.split(".");
+        let fileType = nameParts[nameParts.length - 1];
+        var fileToUpload = {
+          name: name,
+          size: size,
+          uri: uri,
+          type: "application/" + fileType,
+        };
+        console.log(fileToUpload, "...............file");
+        setDoc(fileToUpload);
+      }
+    });
+    console.log(result);
+    console.log("Doc: " + doc.uri);
+  };
+
+  const postDocument = () => {
+    const fileUri = doc.uri;
+    // const url = "gs://surveyem-ad0cf.appspot.com/Education Certificates";
+    // const formData = new FormData();
+
+    // formData.append("document", doc);
+    // const options = {
+    //   method: "POST",
+    //   body: formData,
+    //   headers: {
+    //     Accept: "application/json",
+    //     "Content-Type": "multipart/form-data",
+    //   },
+    // };
+    // console.log(formData);
+
+    // fetch(url, options).catch((error) => console.log(error));
+
+    uploadBytes(storageRef, doc).then((snapshot) => {
+      console.log("Uploaded a blob or file!");
+    });
   };
 
   return (
@@ -180,7 +235,11 @@ const WorkTagScreen = ({ navigation }) => {
         />
       </View>
 
-      <TouchableOpacity style={styles.upload}>
+      <TouchableOpacity style={styles.upload} onPress={pickDocument}>
+        <Text>Select File</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity style={styles.upload} onPress={postDocument}>
         <Text>Upload File</Text>
       </TouchableOpacity>
 
