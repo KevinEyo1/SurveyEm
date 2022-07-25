@@ -4,6 +4,7 @@ import {
   View,
   SafeAreaView,
   TouchableOpacity,
+  TextInput,
 } from "react-native";
 import { React, useState, useEffect, useCallback } from "react";
 
@@ -17,6 +18,7 @@ import { getDocs, collection } from "firebase/firestore";
 import { getStorage, ref, uploadBytes } from "firebase/storage";
 
 const WorkTagScreen = ({ navigation }) => {
+  const [url, setUrl] = useState("");
   const [orgOpen, setOrgOpen] = useState(false);
   const [orgItems, setOrgItems] = useState([]);
   const [orgValue, setOrgValue] = useState(null);
@@ -126,52 +128,6 @@ const WorkTagScreen = ({ navigation }) => {
       .catch((e) => alert(e.message));
   };
 
-  const pickDocument = async () => {
-    let result = await DocumentPicker.getDocumentAsync({
-      type: "*/*",
-      copyToCacheDirectory: true,
-    }).then((response) => {
-      if (response.type == "success") {
-        let { name, size, uri } = response;
-        let nameParts = name.split(".");
-        let fileType = nameParts[nameParts.length - 1];
-        var fileToUpload = {
-          name: name,
-          size: size,
-          uri: uri,
-          type: "application/" + fileType,
-        };
-        console.log(fileToUpload, "...............file");
-        setDoc(fileToUpload);
-      }
-    });
-    console.log(result);
-    console.log("Doc: " + doc.uri);
-  };
-
-  const postDocument = () => {
-    const fileUri = doc.uri;
-    // const url = "gs://surveyem-ad0cf.appspot.com/Education Certificates";
-    // const formData = new FormData();
-
-    // formData.append("document", doc);
-    // const options = {
-    //   method: "POST",
-    //   body: formData,
-    //   headers: {
-    //     Accept: "application/json",
-    //     "Content-Type": "multipart/form-data",
-    //   },
-    // };
-    // console.log(formData);
-
-    // fetch(url, options).catch((error) => console.log(error));
-
-    uploadBytes(storageRef, doc).then((snapshot) => {
-      console.log("Uploaded a blob or file!");
-    });
-  };
-
   return (
     <SafeAreaView style={styles.inputContainer}>
       <Text>Organisation</Text>
@@ -235,17 +191,14 @@ const WorkTagScreen = ({ navigation }) => {
         />
       </View>
 
-      <TouchableOpacity style={styles.upload} onPress={pickDocument}>
-        <Text>Select File</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity style={styles.upload} onPress={postDocument}>
-        <Text>Upload File</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity onPress={handleCreate} style={[styles.button]}>
-        <Text style={styles.buttonText}>Create Tag</Text>
-      </TouchableOpacity>
+      <View style={styles.inputContainer}>
+        <TextInput
+          placeholder="URL"
+          value={url}
+          onChangeText={(text) => setUrl(text)}
+          style={styles.input}
+        />
+      </View>
     </SafeAreaView>
   );
 };
@@ -282,5 +235,15 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginBottom: 20,
     zIndex: -3,
+  },
+  input: {
+    backgroundColor: "white",
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    borderRadius: 10,
+    marginTop: 5,
+  },
+  inputContainer: {
+    width: "80%",
   },
 });

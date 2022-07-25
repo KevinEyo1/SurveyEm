@@ -4,15 +4,16 @@ import {
   View,
   SafeAreaView,
   TouchableOpacity,
+  StatusBar,
 } from "react-native";
 import { React, useState, useEffect, useCallback } from "react";
 
 import DropDownPicker from "react-native-dropdown-picker";
 
-import * as DocumentPicker from "expo-document-picker";
-
 import { auth, db } from "../../firebase";
 import { getDocs, collection } from "firebase/firestore";
+import { getStorage, ref, uploadBytes } from "firebase/storage";
+import uuid from "react-native-uuid";
 
 const SchoolTagScreen = ({ navigation }) => {
   const [yearOpen, setYearOpen] = useState(false);
@@ -99,46 +100,53 @@ const SchoolTagScreen = ({ navigation }) => {
       .catch((e) => alert(e.message));
   };
 
-  const [doc, setDoc] = useState();
-  const pickDocument = async () => {
-    let result = await DocumentPicker.getDocumentAsync({
-      type: "*/*",
-      copyToCacheDirectory: true,
-    }).then((response) => {
-      if (response.type == "success") {
-        let { name, size, uri } = response;
-        let nameParts = name.split(".");
-        let fileType = nameParts[nameParts.length - 1];
-        var fileToUpload = {
-          name: name,
-          size: size,
-          uri: uri,
-          type: "application/" + fileType,
-        };
-        console.log(fileToUpload, "...............file");
-        setDoc(fileToUpload);
-      }
-    });
-    console.log(result);
-    console.log("Doc: " + doc.uri);
-  };
+  const [fileResponse, setFileResponse] = useState([]);
+  const pickDocument = useCallback(async () => {
+    try {
+      const response = await DocumentPicker.pick({
+        presentationStyle: "fullScreen",
+      });
+      setFileResponse(response);
+    } catch (err) {
+      console.warn(err);
+    }
+  }, []);
+  // async () => {
+  // let result = await DocumentPicker.getDocumentAsync({
+  //   type: "*/*",
+  //   copyToCacheDirectory: true,
+  // }).then((response) => {
+  //   if (response.type == "success") {
+  //     let { name, size, uri } = response;
+  //     let nameParts = name.split(".");
+  //     let fileType = nameParts[nameParts.length - 1];
+  //     var fileToUpload = {
+  //       name: name,
+  //       size: size,
+  //       uri: uri,
+  //       type: "application/" + fileType,
+  //     };
+  //     console.log(fileToUpload, "...............file");
+  //     setDoc(fileToUpload);
+  //   }
+  // });
+  // console.log(result);
+  // console.log("Doc: " + doc.uri);
+  // };
 
   const postDocument = () => {
-    const url = "http://192.168.10.107:8000/upload";
-    const fileUri = doc.uri;
-    const formData = new FormData();
-    formData.append("document", doc);
-    const options = {
-      method: "POST",
-      body: formData,
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "multipart/form-data",
-      },
-    };
-    console.log(formData);
+    const fileUri = fileResponse.uri;
 
-    fetch(url, options).catch((error) => console.log(error));
+    const fileExt = fileUri.split(".").pop();
+
+    console.log(fileExt);
+    var uid = uuid.v4();
+    const fileName = `${uid}.${fileExt}`;
+    const storage = getStorage();
+    const storageRef = ref(storage, `Education Certificates/${fileName}`);
+    uploadBytes(storageRef, fileUri).then((snapshot) => {
+      console.log("Uploaded a blob or file!");
+    });
   };
 
   return (
@@ -203,6 +211,19 @@ const SchoolTagScreen = ({ navigation }) => {
           maxHeight={80}
         />
       </View>
+      <SafeAreaView style={styles.container}>
+        <StatusBar barStyle={"dark-content"} />
+        {fileResponse.map((file, index) => (
+          <Text
+            key={index.toString()}
+            style={styles.uri}
+            numberOfLines={1}
+            ellipsizeMode={"middle"}
+          >
+            {file?.uri}
+          </Text>
+        ))}
+      </SafeAreaView>
 
       <TouchableOpacity style={styles.upload} onPress={pickDocument}>
         <Text>Select File</Text>

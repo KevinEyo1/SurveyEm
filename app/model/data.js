@@ -152,18 +152,18 @@ export const createSurveyData = [
   {
     id: "1",
     question: "How do plants grow?",
-    label: "OEQ",
+    label: "Open Ended",
   },
   {
     id: "2",
     question: "Do plants need oxygen?",
-    label: "Tf",
+    label: "True False",
   },
 
   {
     id: "3",
     question: "Do plants need sunlight?",
-    label: "MCQ",
+    label: "Agree Disagree",
   },
 ];
 export const projectCommentsData = [
@@ -183,5 +183,35 @@ export const projectDescriptionData = [
   {
     id: "1",
     description: "This project is about plants",
+  },
+];
+
+export const responseData = [
+  {
+    id: "1",
+    qtype: "Open Ended",
+    question: "eat",
+    answers: ["i have eaten", "i have not eaten", "i had eaten"],
+  },
+  {
+    id: "2",
+    qtype: "Agree Disagree",
+    question: "chicken rice",
+    answers: {
+      sd: 3,
+      d: 1,
+      n: 5,
+      a: 7,
+      sa: 9,
+    },
+  },
+  {
+    id: "3",
+    qtype: "True False",
+    question: "this is rice",
+    answers: {
+      t: 3,
+      f: 7,
+    },
   },
 ];

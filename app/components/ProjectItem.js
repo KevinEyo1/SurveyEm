@@ -16,7 +16,7 @@ function ProjectItem({ pid, title, tag, description, user, self }) {
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>{title}</Text>
       <Text style={styles.tag}>{tag}</Text>
-      <Text>{description}</Text>
+      <Text style={styles.description}>{description}</Text>
       {user != "" && (
         <View>
           <Text style={styles.posted}>Posted by: </Text>
@@ -25,18 +25,20 @@ function ProjectItem({ pid, title, tag, description, user, self }) {
       )}
 
       {/* self bool do diff things */}
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() =>
-          navigation.navigate("SingleProjectSurvey", { pid: pid, self: self })
-        }
-      >
-        <Text style={styles.buttonContent}>View Surveys</Text>
-      </TouchableOpacity>
+      <View style={styles.buttonView}>
+        <TouchableOpacity
+          style={[styles.button, styles.viewButton]}
+          onPress={() =>
+            navigation.navigate("SingleProjectSurvey", { pid: pid, self: self })
+          }
+        >
+          <Text style={styles.buttonContent}>View Surveys</Text>
+        </TouchableOpacity>
 
-      <TouchableOpacity style={[styles.button, styles.commentsButton]}>
-        <Text style={styles.buttonContent}>View Comments</Text>
-      </TouchableOpacity>
+        <TouchableOpacity style={[styles.button, styles.commentsButton]}>
+          <Text style={styles.buttonContent}>View Comments</Text>
+        </TouchableOpacity>
+      </View>
     </SafeAreaView>
   );
 }
@@ -71,6 +73,10 @@ const styles = StyleSheet.create({
     color: "white",
     backgroundColor: "#6D9CCF",
   },
+  description: {
+    
+
+  },
   posted: {
     padding: 20,
     position: "absolute",
@@ -100,26 +106,26 @@ const styles = StyleSheet.create({
   },
   button: {
     padding: 6,
-    position: "absolute",
-    marginBottom: 15,
-    marginRight: 20,
     borderRadius: 20,
     fontSize: 10,
     fontFamily: "OpenSans_700Bold",
     backgroundColor: "#C7755A",
   },
   viewButton: {
-    right: 0,
-    bottom: 0,
+    marginLeft: 10,
   },
   commentsButton: {
-    left: 0,
-    bottom: 0,
+    marginLeft: 90,
   },
   buttonContent: {
     fontSize: 10,
     fontFamily: "OpenSans_700Bold",
     color: "white",
+  },
+  buttonView: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "baseline",
   },
 });
 

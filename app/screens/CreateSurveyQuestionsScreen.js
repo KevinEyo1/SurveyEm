@@ -12,6 +12,10 @@ import {
 import { React, useState, useEffect } from "react";
 import DropDownPicker from "react-native-dropdown-picker";
 
+import { FlatList } from "react-native-gesture-handler";
+
+import { createSurveyData } from "../model/data";
+
 import SurveyQuestionItem from "../components/SurveyQuestionItem";
 import { auth, db } from "../../firebase";
 import {

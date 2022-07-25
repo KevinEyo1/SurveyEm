@@ -32,11 +32,9 @@ function RewardsItem({ title, description, coinsCost, tnc, redeem }) {
         <View style={styles.modalCenter}>
           <View style={styles.modalView}>
             <View style={styles.inputContainer}>
-              <Text style={styles.tncText}>{tnc}</Text>
-              {/* {true == true &&
-                tnc.forEach((condition) => (
-                  <Text style={styles.tncText}>{condition}</Text>
-                ))} */}
+              {tnc.map((condition) => (
+                <Text style={styles.tncText}>{condition}</Text>
+              ))}
             </View>
 
             <TouchableOpacity
