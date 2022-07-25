@@ -53,6 +53,8 @@ const RegisterScreen = () => {
           occupation: occupation,
           coins: 0,
           ownedRewards: [],
+          ownedTags: [],
+          tagApplications: [],
         }).catch((error) => alert(error.message));
         console.log("Registered with: ", user.email);
       })

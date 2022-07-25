@@ -12,7 +12,9 @@ import {
 } from "react-native";
 import { React, useState, useEffect } from "react";
 
-import SurveyQuestionItem from "../components/SurveyQuestionItem";
+import OpenEndedItem from "../components/OpenEndedItem";
+import TrueFalseItem from "../components/TrueFalseItem";
+import AgreeDisagreeItem from "../components/AgreeDisagreeItem";
 import { auth, db } from "../../firebase";
 import {
   doc,
@@ -29,7 +31,7 @@ import {
 } from "firebase/firestore";
 
 const ViewResponsesScreen = ({ route, navigation }) => {
-  const { sid, count } = route.params;
+  const { sid, status } = route.params;
   const [data, setData] = useState([]);
 
   useEffect(() => {
@@ -79,15 +81,12 @@ const ViewResponsesScreen = ({ route, navigation }) => {
 
   const renderItem = ({ item }) => (
     <View>
-      <SurveyQuestionItem
-        qtype={item.qtype}
-        question={item.question}
-      ></SurveyQuestionItem>
-      {/* {item.qtype == "Open Ended" && (
-        <OEResultsItem responses={item.responses} />
+      {item.qtype == "Open Ended" && (
+        <OpenEndedItem question={item.question} responses={item.responses} />
       )}
       {item.qtype == "Agree Disagree" && (
-        <ADResultsItem
+        <AgreeDisagreeItem
+          question={item.question}
           sd={item.sd}
           d={item.d}
           n={item.n}
@@ -96,11 +95,12 @@ const ViewResponsesScreen = ({ route, navigation }) => {
         />
       )}
       {item.qtype == "True False" && (
-        <TFResultsItem
+        <TrueFalseItem
+          question={item.question}
           trueCount={item.trueCount}
           falseCount={item.falseCount}
         />
-      )} */}
+      )}
     </View>
   );
 
@@ -128,9 +128,15 @@ const ViewResponsesScreen = ({ route, navigation }) => {
         keyExtractor={(item) => item.id}
         ItemSeparatorComponent={renderSeparator}
       />
-      <Pressable style={[styles.button, styles.buttonOpen]} onPress={endSurvey}>
-        <Text style={styles.textStyle}>End Survey</Text>
-      </Pressable>
+      {status == "Published" && (
+        <Pressable
+          style={[styles.button, styles.buttonOpen]}
+          onPress={endSurvey}
+        >
+          <Text style={styles.textStyle}>End Survey</Text>
+        </Pressable>
+      )}
+
       <Pressable
         style={[styles.button, styles.buttonOpen]}
         onPress={() => navigation.goBack()}

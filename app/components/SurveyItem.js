@@ -77,7 +77,7 @@ function SurveyItem({
   // };
 
   const viewResponses = () => {
-    navigation.navigate("View Responses", { sid: sid, count: count });
+    navigation.navigate("View Responses", { sid: sid, status: status });
   };
 
   // functions for surveys by other users

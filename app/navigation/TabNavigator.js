@@ -23,13 +23,6 @@ function TabNavigator({ navigation }) {
             onPress={() => navigation.openDrawer()}
           />
         ),
-        headerRight: () => (
-          <Ionicons
-            name="paper-plane-outline"
-            style={{ paddingRight: 15 }}
-            size={27}
-          />
-        ),
         tabBarStyle: { backgroundColor: "lightblue" },
         tabBarInactiveTintColor: "#000",
       }}
