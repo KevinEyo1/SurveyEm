@@ -14,12 +14,15 @@ function ProjectItem({ pid, title, tag, description, user, self }) {
   const navigation = useNavigation();
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>{title}</Text>
+      <View style={styles.contentView}>
+        <Text style={styles.title}>{title}</Text>
+        <Text style={styles.description}>{description}</Text>
+      </View>
       <Text style={styles.tag}>{tag}</Text>
-      <Text style={styles.description}>{description}</Text>
+
       {user != "" && (
-        <View>
-          <Text style={styles.posted}>Posted by: </Text>
+        <View style={styles.postedView}>
+          <Text style={styles.posted}>Posted by:</Text>
           <Text style={styles.user}>{user}</Text>
         </View>
       )}
@@ -47,7 +50,6 @@ const styles = StyleSheet.create({
   container: {
     width: 314,
     height: 200,
-    flex: 1,
     marginLeft: 25,
     borderWidth: 10,
     borderRadius: 30,
@@ -55,15 +57,27 @@ const styles = StyleSheet.create({
     backgroundColor: "#ADDBE6",
   },
 
+  contentView: {
+    alignItems: "baseline",
+    padding: 12,
+    marginTop: 25,
+    marginLeft: 20,
+    marginBottom: 30,
+  },
+
   title: {
-    padding: 30,
-    marginTop: 5,
+    // padding: 30,
+    // marginTop: 5,
     fontSize: 16,
     fontFamily: "InknutAntiqua_700Bold",
   },
+  description: {
+    fontSize: 12,
+  },
+
   tag: {
     padding: 4,
-    marginTop: 15,
+    marginTop: 10,
     marginLeft: 10,
     position: "absolute",
     left: 0,
@@ -73,10 +87,10 @@ const styles = StyleSheet.create({
     color: "white",
     backgroundColor: "#6D9CCF",
   },
-  description: {
-    
-
+  postedView: {
+    marginBottom: 10,
   },
+
   posted: {
     padding: 20,
     position: "absolute",
@@ -89,14 +103,11 @@ const styles = StyleSheet.create({
     padding: 20,
     position: "absolute",
     bottom: 0,
-    marginLeft: 70,
+    marginLeft: 68,
     fontSize: 10,
     fontFamily: "OpenSans_400Regular_Italic",
   },
-  description: {
-    marginTop: 100,
-    position: "absolute",
-  },
+
   points: {
     padding: 30,
     marginTop: 45,
@@ -108,6 +119,7 @@ const styles = StyleSheet.create({
     padding: 6,
     borderRadius: 20,
     fontSize: 10,
+    // marginTop: 30,
     fontFamily: "OpenSans_700Bold",
     backgroundColor: "#C7755A",
   },
@@ -115,7 +127,7 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   commentsButton: {
-    marginLeft: 90,
+    marginLeft: 95,
   },
   buttonContent: {
     fontSize: 10,

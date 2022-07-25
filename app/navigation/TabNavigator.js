@@ -23,13 +23,6 @@ function TabNavigator({ navigation }) {
             onPress={() => navigation.openDrawer()}
           />
         ),
-        headerRight: () => (
-          <Ionicons
-            name="paper-plane-outline"
-            style={{ paddingRight: 15 }}
-            size={27}
-          />
-        ),
         tabBarStyle: { backgroundColor: "lightblue" },
         tabBarInactiveTintColor: "#000",
       }}
@@ -46,7 +39,7 @@ function TabNavigator({ navigation }) {
         }}
       />
       <Tab.Screen
-        name="SurveyStack"
+        name="Survey Area"
         component={SurveyStack}
         options={{
           tabBarShowLabel: false,
@@ -56,7 +49,7 @@ function TabNavigator({ navigation }) {
         }}
       />
       <Tab.Screen
-        name="CreateStack"
+        name="Create Items"
         component={CreateStack}
         options={{
           tabBarShowLabel: false,
@@ -67,7 +60,7 @@ function TabNavigator({ navigation }) {
         }}
       />
       <Tab.Screen
-        name="ProjectStack"
+        name="Project Area"
         component={ProjectStack}
         options={{
           tabBarShowLabel: false,

@@ -10,6 +10,7 @@ const ProcessTagScreen = ({ navigation }) => {
 
       <TouchableOpacity
         style={styles.button}
+        // onPress={() => navigation.popToTop().popToTop()}
         onPress={() => navigation.navigate("Home", { screen: "Home2" })}
       >
         <Text style={styles.buttonText}>Return to Home</Text>

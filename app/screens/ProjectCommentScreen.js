@@ -1,3 +1,4 @@
+import { React, useState, useEffect } from "react";
 import {
   StyleSheet,
   Text,
@@ -8,7 +9,6 @@ import {
   Alert,
   SafeAreaView,
 } from "react-native";
-import { React, useState } from "react";
 
 import ProjectCommentItem from "../components/ProjectCommentItem";
 import { projectCommentsData } from "../model/data";
@@ -19,85 +19,102 @@ import {
   setDoc,
   addDoc,
   collection,
+  getDoc,
   getDocs,
   query,
   where,
   updateDoc,
   arrayUnion,
+  Timestamp,
+  orderBy,
 } from "firebase/firestore";
+import { auth } from "../../firebase";
+import { async } from "@firebase/util";
 
-const ProjectCommentScreen = () => {
+const ProjectCommentScreen = ({ route, navigation }) => {
+  const { pid, self, title, description, tag, user } = route.params;
   const [comment, setComment] = useState("");
-  const [user, setUser] = useState("");
   const [allComments, setAllComments] = useState([]);
-  const [description, setDescription] = useState("");
+  const [change, setChange] = useState(false);
 
-  const handleAddComment = () => {
-    if (comment == "") {
-      Alert.alert("Please input a comment");
-    } else {
-      const newCommentRef = doc();
-      // collection(db, "users", uid, "projects", selectedProject, "surveys")
-      setDoc(newCommentRef, {
-        user: user,
-        comment: comment,
-      }).catch((error) => alert(error.message));
-    }
+  useEffect(() => {
+    getComments();
+  }, [change]);
+
+  const getComments = async () => {
+    const list = [];
+    const commentQuery = collection(db, "projects", pid, "comments");
+    const commentQuerySnapshot = await getDocs(commentQuery);
+    const userRef = doc(db, "users", uid);
+    commentQuerySnapshot.forEach(async (comment) => {
+      const commenter = await getDoc(doc(db, "users", comment.data().userID));
+      const commenterDetails = commenter
+        .data()
+        .ownedTags.find((x) => x.tagField == tag);
+      if (commenterDetails != undefined) {
+        list.push({
+          username: commenter.data().username,
+          tagField: commenterDetails.tagField,
+          tagValue: commenterDetails.tagValue,
+          comment: comment.data().comment,
+        });
+      } else {
+        list.push({
+          username: commenter.data().username,
+          tagField: null,
+          tagValue: null,
+          comment: comment.data().comment,
+        });
+      }
+    });
+    setAllComments(list);
   };
 
-  const getDescription = () => {
-    const list = [];
-
-    // const descriptionQuerySnapshot =
-    // getDocs(collection(db, "tags"));
-
-    descriptionQuerySnapshot
-      .then((q) => {
-        q.forEach((description) => {
-          list.push({
-            label: description.data().description,
-            value: description.data().description,
-          });
-        });
-        setDescription(list);
-        console.log(list);
-      })
-      .catch((e) => alert(e.message));
+  const handleAddComment = async () => {
+    if (comment == "") {
+      Alert.alert("Please input a comment.");
+    } else {
+      const docRef = await addDoc(collection(db, "projects", pid, "comments"), {
+        userID: auth.currentUser.uid,
+        comment: comment,
+      });
+      setChange(!change);
+    }
   };
 
   return (
     <SafeAreaView>
-      <View style={styles.container}>{/* Project Description  */}</View>
+      <View style={styles.container}>
+        {/* display top section, user, desc, tag, title
+         */}
+      </View>
 
       <View style={styles.add}>
-        {/* Add Comments */}
         <TextInput
           placeholder="Add Comment"
           value={comment}
           onChangeText={(text) => setComment(text)}
           style={styles.input}
         />
-        <TouchableOpacity
-          style={styles.addButton}
-          // onPress={handleAddComment}
-        >
+
+        <TouchableOpacity style={styles.addButton} onPress={handleAddComment}>
           <Text style={styles.addText}>+</Text>
         </TouchableOpacity>
       </View>
 
-      {/* All Comments */}
-      {/* <ScrollView style={{ padding: 10 }}>
+      <ScrollView style={{ padding: 10 }}>
         <View style={styles.container}>
           {true == true &&
-            projectCommentsData.map((item) => (
+            allComments.map((com) => (
               <ProjectCommentItem
-                key={item.id}
-                user={item.user}
-                comment={item.comment}
+                username={com.username}
+                tagField={com.tagField}
+                tagValue={com.tagValue}
+                comment={com.comment}
               />
             ))}
         </View>
-      </ScrollView> */}
+      </ScrollView>
     </SafeAreaView>
   );
 };
@@ -135,5 +152,10 @@ const styles = StyleSheet.create({
     backgroundColor: "lightgrey",
     width: "90%",
     padding: 10,
+  },
+
+  disclaimer: {
+    textAlign: "center",
+    fontSize: 12,
   },
 });

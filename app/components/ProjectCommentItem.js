@@ -1,10 +1,11 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 
-function ProjectCommentItem(user, comment) {
+function ProjectCommentItem({ user, tagField, tagValue, comment }) {
   return (
     <View style={styles.container}>
       <Text style={styles.user}>{user}</Text>
+      {tagField != null && <View>{/* insert tagfield and tagvalue */}</View>}
       <Text style={styles.comment}>{comment}</Text>
     </View>
   );

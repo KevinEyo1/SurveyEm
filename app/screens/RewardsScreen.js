@@ -34,27 +34,37 @@ const RewardsScreen = ({ navigation }) => {
   const [rewardItems, setRewardItems] = useState([]);
   const [loaded, setLoaded] = useState(false);
   const [coins, setCoins] = useState(0);
-  const [claimedReward, setClaimedReward] = useState("");
   const uid = auth.currentUser.uid;
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("focus", () => {
+      getRewards();
+      getCoins();
+    });
+    return unsubscribe;
+  }, [navigation]);
 
   useEffect(() => {
     getRewards();
     getCoins();
   }, [coins]);
 
-  const getRewards = () => {
+  const getRewards = async () => {
     const list = [];
     const rewardQuerySnapshot = getDocs(query(collection(db, "rewards")));
+    const userRewards = await getDoc(doc(db, "users", uid));
     rewardQuerySnapshot
       .then((q) => {
         q.forEach((reward) => {
-          list.push({
-            id: reward.id,
-            title: reward.data().title,
-            description: reward.data().description,
-            coinsCost: reward.data().coinsCost,
-            tnc: reward.data().tnc,
-          });
+          if (!userRewards.data().ownedRewards.includes(reward.id))
+            list.push({
+              id: reward.id,
+              title: reward.data().title,
+              description: reward.data().description,
+              coinsCost: reward.data().coinsCost,
+              tnc: reward.data().tnc,
+            });
+          console.log(reward.data().tnc);
         });
         setRewardItems(list);
         setLoaded(true);
@@ -64,29 +74,27 @@ const RewardsScreen = ({ navigation }) => {
 
   // get initial user coins (either only call once, or call after every update to coins in db)
   const getCoins = () => {
-    const userQuery = getDoc(query(doc(db, "users", uid)));
-    userQuery.then((user) => {
-      setCoins(user.data().coins);
+    const coinsRef = getDoc(doc(db, "users", uid));
+    coinsRef.then((q) => {
+      setCoins(q.data().coins);
     });
   };
 
   // set user coins to new value and update user owned rewards
-  const redeemUpdate = (coinsCost, title) => {
+  const redeemUpdate = (coinsCost, id) => {
     if (coins < coinsCost) {
       Alert.alert("Not enough coins.");
     } else {
-      const currentCoins = coins;
-      setCoins(currentCoins - coinsCost);
+      const newCoins = coins - coinsCost;
+      setCoins(newCoins);
       console.log(coins);
 
       const userRef = doc(db, "users", uid);
       updateDoc(userRef, {
-        coins: coins,
-        ownedRewards: arrayUnion(claimedReward),
+        coins: newCoins,
+        ownedRewards: arrayUnion(id),
       });
-      setCoins(coins);
       Alert.alert("Reward claimed.");
-      setClaimedReward({ title });
     }
   };
 
@@ -94,19 +102,20 @@ const RewardsScreen = ({ navigation }) => {
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
       <ScrollView style={{ padding: 10 }}>
         <View>
-          <Text style={styles.coinText}>{coins}</Text>
+          <Text style={styles.coinText}>Available coins: {coins}</Text>
         </View>
         <View>
+          {rewardItems.length == 0 && <Text>No more rewards to redeem.</Text>}
           {rewardItems.length != 0 &&
             rewardItems.map((reward) => (
               <RewardsItem
                 key={reward.id}
+                id={reward.id}
                 title={reward.title}
                 description={reward.description}
                 coinsCost={reward.coinsCost}
                 tnc={reward.tnc}
-                redeem={() => redeemUpdate(reward.coinsCost, reward.title)}
-                // claimed={reward.claimed}
+                redeemUpdate={redeemUpdate}
               />
             ))}
         </View>
@@ -120,7 +129,12 @@ export default RewardsScreen;
 const styles = StyleSheet.create({
   coinText: {
     backgroundColor: "lightgrey",
-    fontSize: 20,
+    fontSize: 16,
     alignSelf: "flex-end",
+    marginBottom: 20,
+    marginRight: 10,
+    fontFamily: "OpenSans_700Bold",
+    padding: 10,
+    borderRadius: 20,
   },
 });

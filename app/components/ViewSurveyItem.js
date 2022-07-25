@@ -7,6 +7,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   Alert,
+  Image,
 } from "react-native";
 
 import { auth, db } from "../../firebase";
@@ -24,7 +25,7 @@ import {
   increment,
 } from "firebase/firestore";
 
-function SurveyItem({
+function ViewSurveyItem({
   sid,
   title,
   field,
@@ -150,7 +151,12 @@ function SurveyItem({
 
           <Text style={styles.coinsReward}>{coinsReward} coins</Text>
           {/* if bookmarked then display a star icon on top right of item */}
-          {bookmarked == true && <Text>Bookmarked</Text>}
+          {bookmarked == true && (
+            <Image
+              source={require("../assets/star.png")}
+              style={styles.image}
+            />
+          )}
 
           <View style={styles.bottomView}>
             {self == true && <Text style={styles.status}>{status}</Text>}
@@ -214,8 +220,8 @@ const styles = StyleSheet.create({
   coinsReward: {
     padding: 15,
     position: "absolute",
-    top: 0,
-    right: 0,
+    bottom: -10,
+    left: 0,
     fontSize: 12,
     fontFamily: "OpenSans_700Bold",
   },
@@ -223,8 +229,8 @@ const styles = StyleSheet.create({
   buttonright: {
     padding: 5,
     width: "40%",
-    alignSelf: "flex-end",
-    marginLeft: 60,
+    // position: "absolute",
+    marginLeft: 150,
     borderRadius: 20,
     fontSize: 10,
     fontFamily: "OpenSans_700Bold",
@@ -239,7 +245,7 @@ const styles = StyleSheet.create({
 
   status: {
     marginTop: 2,
-    marginLeft: 15,
+    marginLeft: 20,
     width: 80,
     fontSize: 13,
     fontFamily: "OpenSans_400Regular_Italic",
@@ -247,9 +253,22 @@ const styles = StyleSheet.create({
 
   bottomView: {
     flexDirection: "row",
+    alignItems: "baseline",
     marginTop: 5,
     padding: 5,
   },
+
+  image: {
+    flex: 1,
+    width: 10,
+    height: 10,
+    padding: 20,
+    marginRight: 10,
+    marginTop: 10,
+    position: "absolute",
+    top: 0,
+    right: 0,
+  },
 });
 
-export default SurveyItem;
+export default ViewSurveyItem;

@@ -4,18 +4,34 @@ import {
   View,
   SafeAreaView,
   TouchableOpacity,
-  StatusBar,
+  Alert,
+  TextInput,
 } from "react-native";
 import { React, useState, useEffect, useCallback } from "react";
 
+import { getStorage, ref, uploadBytesResumable } from "firebase/storage";
+
 import DropDownPicker from "react-native-dropdown-picker";
 
+import * as DocumentPicker from "expo-document-picker";
+
 import { auth, db } from "../../firebase";
-import { getDocs, collection } from "firebase/firestore";
-import { getStorage, ref, uploadBytes } from "firebase/storage";
-import uuid from "react-native-uuid";
+import {
+  getDocs,
+  collection,
+  doc,
+  getDoc,
+  updateDoc,
+  arrayUnion,
+  arrayRemove,
+} from "firebase/firestore";
+import { linear } from "react-native/Libraries/Animated/Easing";
+import { async } from "@firebase/util";
 
 const SchoolTagScreen = ({ navigation }) => {
+  const [link, setLink] = useState("");
+  const [tagValue, setTagValue] = useState(0);
+
   const [yearOpen, setYearOpen] = useState(false);
   const [yearValue, setYearValue] = useState(null);
   const [yearItems, setYearItems] = useState([
@@ -32,13 +48,17 @@ const SchoolTagScreen = ({ navigation }) => {
   const [majorOpen, setMajorOpen] = useState(false);
   const [majorValue, setMajorValue] = useState(null);
   const [majorItems, setMajorItems] = useState([
-    { label: "Major", value: 3 },
+    { label: "Major", value: 4 },
     { label: "Minor", value: 1 },
   ]);
 
   const [tags, setTags] = useState([]);
   const [tagOpen, setTagOpen] = useState(false);
-  const [selectedTags, setSelectedTags] = useState([]);
+  const [selectedTags, setSelectedTags] = useState("");
+
+  const [schools, setSchools] = useState([]);
+  const [schoolOpen, setSchoolOpen] = useState(false);
+  const [selectedSchools, setSelectedSchools] = useState("");
 
   const [eduOpen, setEduOpen] = useState(false);
   const [eduValue, setEduValue] = useState(null);
@@ -49,41 +69,106 @@ const SchoolTagScreen = ({ navigation }) => {
     { label: "Ph.D", value: 8 },
   ]);
 
+  const onSchoolOpen = useCallback(() => {
+    setYearOpen(false);
+    setEduOpen(false);
+    setMajorOpen(false);
+    setTagOpen(false);
+  });
+
   const onYearOpen = useCallback(() => {
     setEduOpen(false);
     setTagOpen(false);
     setMajorOpen(false);
+    setSchoolOpen(false);
   });
 
   const onEduOpen = useCallback(() => {
     setYearOpen(false);
     setTagOpen(false);
     setMajorOpen(false);
+    setSchoolOpen(false);
   });
 
   const onTagOpen = useCallback(() => {
     setYearOpen(false);
     setEduOpen(false);
     setMajorOpen(false);
+    setSchoolOpen(false);
   });
 
   const onMajorOpen = useCallback(() => {
     setYearOpen(false);
     setTagOpen(false);
     setEduOpen(false);
+    setSchoolOpen(false);
   });
 
   useEffect(() => {
     getTags();
+    getSchools();
   }, []);
 
-  DropDownPicker.setMode("BADGE");
-
-  const tagValue = eduValue + yearValue;
-
-  const handleCreate = () => {
-    console.log("%s: " + tagValue, selectedTags);
-    navigation.navigate("ProcessTag");
+  const handleCreate = async () => {
+    // check tinyurl accurate
+    if (
+      yearValue == null ||
+      eduValue == null ||
+      majorValue == null ||
+      selectedSchools == "" ||
+      selectedTags == "" ||
+      link == ""
+    ) {
+      Alert.alert("Missing Fields.");
+    } else {
+      setTagValue(yearValue + majorValue + eduValue);
+      const userRef = doc(db, "users", auth.currentUser.uid);
+      updateDoc(userRef, {
+        tagApplications: arrayUnion({
+          type: "School",
+          school: selectedSchools,
+          field: selectedTags,
+          year: yearValue,
+          major: majorValue,
+          edu: eduValue,
+          link: link,
+          approved: true,
+        }),
+      });
+      const userDoc = getDoc(userRef);
+      userDoc.then((q) => {
+        if (q.data().ownedTags.includes(selectedTags)) {
+          const tagVs = q
+            .data()
+            .ownedTags.find((x) => x.tagField == selectedTags);
+          if (tagValue > tagVs) {
+            updateDoc(userRef, {
+              ownedTags: arrayRemove({
+                tagField: selectedTags,
+                tagValue: tagVs,
+                approved: true,
+              }),
+            });
+            updateDoc(userRef, {
+              ownedTags: arrayUnion({
+                tagField: selectedTags,
+                tagValue: tagValue,
+                approved: true,
+              }),
+            });
+          }
+        } else {
+          updateDoc(userRef, {
+            ownedTags: arrayUnion({
+              tagField: tags,
+              tagValue: tagValue,
+              approved: true,
+            }),
+          });
+        }
+        navigation.navigate("ProcessTag");
+      });
+    }
   };
 
   const getTags = () => {
@@ -95,7 +180,19 @@ const SchoolTagScreen = ({ navigation }) => {
           list.push({ label: tag.data().tag, value: tag.data().tag });
         });
         setTags(list);
-        console.log(list);
+      })
+      .catch((e) => alert(e.message));
+  };
+
+  const getSchools = () => {
+    const list = [];
+    const schQuerySnapshot = getDocs(collection(db, "schools"));
+    schQuerySnapshot
+      .then((q) => {
+        q.forEach((sch) => {
+          list.push({ label: sch.data().name, value: sch.data().name });
+        });
+        setSchools(list);
       })
       .catch((e) => alert(e.message));
   };
@@ -151,20 +248,41 @@ const SchoolTagScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.inputContainer}>
+      <TextInput
+        style={styles.input}
+        placeholder="Enter tinyurl link to prove credentials stated below."
+        value={link}
+        onChangeText={(text) => setLink(text)}
+      />
       <DropDownPicker
         style={styles.dropdown}
-        placeholder="Year of Study"
-        open={yearOpen}
-        value={yearValue}
-        items={yearItems}
-        onOpen={onYearOpen}
-        setOpen={setYearOpen}
-        setValue={setYearValue}
-        setItems={setYearItems}
+        placeholder="School of Study"
+        open={schoolOpen}
+        value={selectedSchools}
+        items={schools}
+        onOpen={onSchoolOpen}
+        setOpen={setSchoolOpen}
+        setValue={setSelectedSchools}
+        setItems={setSchools}
         maxHeight={80}
       />
 
       <View style={{ zIndex: -0.5 }}>
+        <DropDownPicker
+          style={styles.dropdown}
+          placeholder="Year of Study"
+          open={yearOpen}
+          value={yearValue}
+          items={yearItems}
+          onOpen={onYearOpen}
+          setOpen={setYearOpen}
+          setValue={setYearValue}
+          setItems={setYearItems}
+          maxHeight={80}
+        />
+      </View>
+
+      <View style={{ zIndex: -1.5 }}>
         <DropDownPicker
           style={styles.dropdown}
           placeholder="Major/Minor"
@@ -179,7 +297,7 @@ const SchoolTagScreen = ({ navigation }) => {
         />
       </View>
 
-      <View style={{ zIndex: -1 }}>
+      <View style={{ zIndex: -2 }}>
         <DropDownPicker
           style={styles.dropdown}
           placeholder="Field of Study"
@@ -190,14 +308,11 @@ const SchoolTagScreen = ({ navigation }) => {
           setOpen={setTagOpen}
           setValue={setSelectedTags}
           setItems={setTags}
-          multiple={true}
-          min={1}
-          max={5}
           maxHeight={80}
         />
       </View>
 
-      <View style={{ zIndex: -2 }}>
+      <View style={{ zIndex: -3 }}>
         <DropDownPicker
           style={styles.dropdown}
           placeholder="Education Level"
@@ -212,7 +327,6 @@ const SchoolTagScreen = ({ navigation }) => {
         />
       </View>
       <SafeAreaView style={styles.container}>
-        <StatusBar barStyle={"dark-content"} />
         {fileResponse.map((file, index) => (
           <Text
             key={index.toString()}
@@ -225,15 +339,15 @@ const SchoolTagScreen = ({ navigation }) => {
         ))}
       </SafeAreaView>
 
-      <TouchableOpacity style={styles.upload} onPress={pickDocument}>
+      {/* <TouchableOpacity style={styles.upload} onPress={pickDocument}>
         <Text>Select File</Text>
       </TouchableOpacity>
 
       <TouchableOpacity style={styles.upload} onPress={postDocument}>
         <Text>Upload File</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
 
-      <TouchableOpacity onPress={handleCreate} style={[styles.button]}>
+      <TouchableOpacity onPress={handleCreate} style={[styles.tagbutton]}>
         <Text style={styles.buttonText}>Create Tag</Text>
       </TouchableOpacity>
     </SafeAreaView>
@@ -243,9 +357,16 @@ const SchoolTagScreen = ({ navigation }) => {
 export default SchoolTagScreen;
 
 const styles = StyleSheet.create({
+  input: {
+    backgroundColor: "#E6E6E6",
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    borderRadius: 10,
+    bottom: 30,
+  },
   inputContainer: {
     padding: 20,
-    marginTop: 20,
+    marginTop: 60,
   },
   dropdown: {
     padding: 15,
@@ -256,6 +377,16 @@ const styles = StyleSheet.create({
     width: "90%",
     padding: 15,
     borderRadius: 10,
+    alignItems: "center",
+    alignSelf: "center",
+    zIndex: -3,
+  },
+  tagbutton: {
+    backgroundColor: "#0782F9",
+    width: "90%",
+    padding: 15,
+    borderRadius: 10,
+    top: 50,
     alignItems: "center",
     alignSelf: "center",
     zIndex: -3,

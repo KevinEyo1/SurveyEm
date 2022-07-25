@@ -12,14 +12,16 @@ import {
 
 import { auth, db } from "../../firebase";
 
-function RewardsItem({ title, description, coinsCost, tnc, redeem }) {
+function RewardsItem({ id, title, description, coinsCost, tnc, redeemUpdate }) {
   const [modalVisible, setModalVisible] = useState(false);
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>{title}</Text>
-      <Text style={styles.description}>{description}</Text>
-      <Text style={styles.coinsCost}>{coinsCost}</Text>
+      <View style={styles.contentView}>
+        <Text style={styles.title}>{title}</Text>
+        <Text style={styles.description}>{description}</Text>
+      </View>
+      <Text style={styles.coinsCost}>{coinsCost} coins</Text>
 
       <Modal
         animationType="fade"
@@ -32,9 +34,10 @@ function RewardsItem({ title, description, coinsCost, tnc, redeem }) {
         <View style={styles.modalCenter}>
           <View style={styles.modalView}>
             <View style={styles.inputContainer}>
-              {tnc.map((condition) => (
-                <Text style={styles.tncText}>{condition}</Text>
-              ))}
+              {true == true &&
+                tnc.map((condition) => (
+                  <Text style={styles.tncText}>{condition}</Text>
+                ))}
             </View>
 
             <TouchableOpacity
@@ -48,7 +51,7 @@ function RewardsItem({ title, description, coinsCost, tnc, redeem }) {
               style={[styles.button, styles.buttonAdd]}
               onPress={() => {
                 setModalVisible(!modalVisible);
-                redeem();
+                redeemUpdate(coinsCost, id);
               }}
             >
               <Text style={styles.textStyle}>Redeem Reward</Text>
@@ -69,21 +72,32 @@ function RewardsItem({ title, description, coinsCost, tnc, redeem }) {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    width: "100%",
+    height: 200,
     borderWidth: 10,
+    borderRadius: 30,
     borderColor: "white",
-    backgroundColor: "lightblue",
-    height: 150,
+    backgroundColor: "#ADDBE6",
   },
-  title: { padding: 20, position: "absolute", height: "50%" },
-  image: { height: "50%", right: "50%" },
-  description: { marginTop: 50 },
+  contentView: {
+    padding: 10,
+  },
+  title: {
+    fontSize: 14,
+    fontFamily: "InknutAntiqua_700Bold",
+  },
+  description: {
+    fontSize: 12,
+    fontFamily: "OpenSans_400Regular_Italic",
+    marginTop: 20,
+  },
   coinsCost: {
-    padding: 20,
+    padding: 10,
     position: "absolute",
-    right: 0,
-    bottom: 0,
-    height: "50%",
+    right: 25,
+    bottom: 8,
+    fontSize: 15,
+    fontFamily: "OpenSans_700Bold",
   },
 
   button: {
@@ -99,7 +113,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#C7755A",
   },
   buttonContent: {
-    fontSize: 10,
+    fontSize: 12,
     fontFamily: "OpenSans_700Bold",
     color: "white",
   },

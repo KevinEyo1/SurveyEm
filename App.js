@@ -35,5 +35,6 @@ export default function App() {
     <NavigationContainer>
       <AuthStack />
     </NavigationContainer>
+    // <ProfileScreen />
   );
 }

@@ -8,6 +8,7 @@ import {
   TextInput,
   TouchableOpacity,
   FlatList,
+  Alert,
 } from "react-native";
 
 import SurveyItem from "../components/SurveyItem";
@@ -24,6 +25,7 @@ import {
   query,
   where,
 } from "firebase/firestore";
+import Pressable from "react-native/Libraries/Components/Pressable/Pressable";
 
 const SingleProjectSurveyScreen = ({ route, navigation }) => {
   const { pid, self } = route.params;
@@ -94,7 +96,15 @@ const SingleProjectSurveyScreen = ({ route, navigation }) => {
             <Text>No surveys created yet.</Text>
           )}
           {surveyItems.length == 0 && loaded == true && self == false && (
-            <Text>No surveys published by other users yet.</Text>
+            <View>
+              <Text>No surveys published by other users yet.</Text>
+              <Pressable
+                style={[styles.button, styles.buttonOpen]}
+                onPress={() => navigation.goBack()}
+              >
+                <Text style={styles.textStyle}>Go Back</Text>
+              </Pressable>
+            </View>
           )}
           {surveyItems.length != 0 &&
             surveyItems.map((survey) => (
@@ -114,5 +124,29 @@ const SingleProjectSurveyScreen = ({ route, navigation }) => {
     </SafeAreaView>
   );
 };
+
+const styles = StyleSheet.create({
+  button: {
+    borderRadius: 20,
+    padding: 10,
+  },
+
+  buttonAdd: {
+    backgroundColor: "#C7755A",
+    width: "60%",
+    alignSelf: "center",
+    marginTop: 10,
+  },
+  buttonOpen: {
+    backgroundColor: "#C7755A",
+    width: "80%",
+    alignSelf: "center",
+  },
+  textStyle: {
+    color: "white",
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+});
 
 export default SingleProjectSurveyScreen;

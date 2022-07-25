@@ -16,9 +16,7 @@ function Content({ qtype, answers }) {
         onChangeText={(text) => setAnswer(text)}
       />
     );
-  }
-
-  if (qtype == "Agree Disagree") {
+  } else if (qtype == "Agree Disagree") {
     return (
       <View style={styles.container}>
         <View style={styles.newOption}>
@@ -69,8 +67,7 @@ function Content({ qtype, answers }) {
         </View>
       </View>
     );
-  }
-  if (qtype == "True False") {
+  } else if (qtype == "True False") {
     return (
       <View>
         <View style={styles.option}>
@@ -92,6 +89,8 @@ function Content({ qtype, answers }) {
         </View>
       </View>
     );
+  } else {
+    return null;
   }
 }
 

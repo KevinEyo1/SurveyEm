@@ -16,6 +16,14 @@ const CreateTagScreen = ({ navigation }) => {
       >
         <Text style={styles.buttonOutlineText}>Work</Text>
       </TouchableOpacity>
+
+      <TouchableOpacity
+        style={styles.button}
+        // onPress={() => navigation.popToTop().popToTop()}
+        onPress={() => navigation.navigate("Home", { screen: "Home2" })}
+      >
+        <Text style={styles.buttonText}>Return to Home</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -35,6 +43,7 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 10,
     alignItems: "center",
+    marginTop: 50,
   },
   buttonText: {
     color: "white",
