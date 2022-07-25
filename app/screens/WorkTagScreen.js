@@ -13,7 +13,6 @@ import DropDownPicker from "react-native-dropdown-picker";
 import * as DocumentPicker from "expo-document-picker";
 
 import { auth, db } from "../../firebase";
-<<<<<<< HEAD
 import {
   getDocs,
   collection,
@@ -23,17 +22,10 @@ import {
   arrayUnion,
   arrayRemove,
 } from "firebase/firestore";
-=======
-import { getDocs, collection } from "firebase/firestore";
->>>>>>> 28e26b0421c52f70839dd56c27cde76fc48f22de
 
 import { getStorage, ref, uploadBytes } from "firebase/storage";
 
 const WorkTagScreen = ({ navigation }) => {
-<<<<<<< HEAD
-=======
-  const [url, setUrl] = useState("");
->>>>>>> 28e26b0421c52f70839dd56c27cde76fc48f22de
   const [orgOpen, setOrgOpen] = useState(false);
   const [orgItems, setOrgItems] = useState([]);
   const [orgValue, setOrgValue] = useState(null);
@@ -49,21 +41,12 @@ const WorkTagScreen = ({ navigation }) => {
   const [yearOpen, setYearOpen] = useState(false);
   const [yearValue, setYearValue] = useState(null);
   const [yearItems, setYearItems] = useState([
-<<<<<<< HEAD
     { label: "1-5", value: 4 },
     { label: "5-8", value: 6 },
     { label: "8-12", value: 8 },
     { label: "12-16", value: 10 },
     { label: "16-20", value: 12 },
     { label: ">20", value: 14 },
-=======
-    { label: "1-5", value: 1 },
-    { label: "5-8", value: 2 },
-    { label: "8-12", value: 3 },
-    { label: "12-16", value: 4 },
-    { label: "16-20", value: 5 },
-    { label: ">20", value: 6 },
->>>>>>> 28e26b0421c52f70839dd56c27cde76fc48f22de
   ]);
 
   const onYearOpen = useCallback(() => {
