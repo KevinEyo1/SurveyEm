@@ -5,13 +5,16 @@ import {
   View,
   TextInput,
   TouchableOpacity,
-  Pressable,
   Modal,
-  FlatList,
   Alert,
+  ScrollView,
 } from "react-native";
 import { React, useState, useEffect } from "react";
 import DropDownPicker from "react-native-dropdown-picker";
+
+import { FlatList } from "react-native-gesture-handler";
+
+import { createSurveyData } from "../model/data";
 
 import SurveyQuestionItem from "../components/SurveyQuestionItem";
 import { auth, db } from "../../firebase";
@@ -170,6 +173,7 @@ const CreateSurveyQuestionsScreen = ({ route, navigation }) => {
   };
 
   const finishEditing = () => {
+    Alert.alert("Survey Saved");
     navigation.goBack();
   };
 
@@ -188,6 +192,13 @@ const CreateSurveyQuestionsScreen = ({ route, navigation }) => {
 
   return (
     <View style={styles.centeredView}>
+      <TouchableOpacity
+        style={[styles.button, styles.buttonOpen]}
+        onPress={() => setModalVisible(true)}
+      >
+        <Text style={styles.textStyle}>Add Question</Text>
+      </TouchableOpacity>
+
       <Modal
         animationType="fade"
         transparent={true}
@@ -198,7 +209,7 @@ const CreateSurveyQuestionsScreen = ({ route, navigation }) => {
       >
         <View style={styles.modalCenter}>
           <View style={styles.modalView}>
-            <Pressable
+            <TouchableOpacity
               style={[styles.button, styles.buttonClose]}
               onPress={() => {
                 setQuestion("");
@@ -207,7 +218,7 @@ const CreateSurveyQuestionsScreen = ({ route, navigation }) => {
               }}
             >
               <Text style={styles.textClose}>X</Text>
-            </Pressable>
+            </TouchableOpacity>
             <View style={styles.inputContainer}>
               <DropDownPicker
                 open={open}
@@ -236,30 +247,38 @@ const CreateSurveyQuestionsScreen = ({ route, navigation }) => {
           </View>
         </View>
       </Modal>
+
       <FlatList
         data={data}
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
         ItemSeparatorComponent={renderSeparator}
       />
-      <Pressable
-        style={[styles.button, styles.buttonOpen]}
-        onPress={() => setModalVisible(true)}
-      >
-        <Text style={styles.textStyle}>Add Question</Text>
-      </Pressable>
-      <Pressable
+
+      <TouchableOpacity
         style={[styles.button, styles.buttonOpen]}
         onPress={finishEditing}
       >
-        <Text style={styles.textStyle}>Finish Editing</Text>
-      </Pressable>
-      <Pressable
+        <Text style={styles.textStyle}>Save Survey</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
         style={[styles.button, styles.buttonOpen]}
         onPress={publishSurvey}
       >
         <Text style={styles.textStyle}>Publish Survey</Text>
-      </Pressable>
+      </TouchableOpacity>
+
+      {/* <View style={styles.inputContainer}>
+        {true == true &&
+          createSurveyData.map((item) => (
+            <SurveyQuestionItem
+              key={item.id}
+              question={item.question}
+              label={item.label}
+            />
+          ))}
+      </View> */}
     </View>
   );
 };
@@ -267,8 +286,6 @@ const CreateSurveyQuestionsScreen = ({ route, navigation }) => {
 const styles = StyleSheet.create({
   centeredView: {
     flex: 1,
-    // justifyContent: "center",
-    // alignItems: "center",
     marginTop: 22,
   },
   modalCenter: {
@@ -291,6 +308,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
   },
+
   inputContainer: {
     width: "100%",
     marginBottom: 20,
@@ -303,25 +321,38 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginTop: 5,
   },
+  topButtonView: {
+    flex: 1,
+    flexDirection: "row",
+    alignContent: "flex-end",
+  },
   button: {
+    padding: 6,
     borderRadius: 20,
-    padding: 10,
+    fontSize: 10,
+    // marginTop: 30,
+    fontFamily: "OpenSans_700Bold",
   },
 
   buttonAdd: {
     backgroundColor: "#C7755A",
     width: "60%",
     alignSelf: "center",
-    marginTop: 10,
   },
   buttonOpen: {
     backgroundColor: "#C7755A",
     width: "80%",
     alignSelf: "center",
+    marginBottom: 10,
   },
   buttonClose: {
     position: "absolute",
     right: 0,
+  },
+
+  topButtonView: {
+    flexWrap: "wrap",
+    flexDirection: "row-reverse",
   },
 
   textStyle: {

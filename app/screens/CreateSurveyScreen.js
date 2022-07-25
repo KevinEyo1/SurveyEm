@@ -59,6 +59,8 @@ const CreateSurveyScreen = () => {
   const handleNext = () => {
     if (title == "" || selectedProject == null || description == "") {
       Alert.alert("Fields not completed");
+    } else if (selectedProject == null) {
+      Alert.alert("No Project Selected");
     } else {
       const project = getDoc(doc(db, "projects", selectedProject));
       project.then((project) => {

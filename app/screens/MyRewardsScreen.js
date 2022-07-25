@@ -96,6 +96,14 @@ const MyRewardsScreen = ({ navigation }) => {
               />
             ))}
         </View>
+
+        <TouchableOpacity
+          style={styles.button}
+          // onPress={() => navigation.popToTop().popToTop()}
+          onPress={() => navigation.navigate("Home", { screen: "Home2" })}
+        >
+          <Text style={styles.buttonText}>Return to Home</Text>
+        </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
   );
@@ -108,5 +116,19 @@ const styles = StyleSheet.create({
     backgroundColor: "lightgrey",
     fontSize: 20,
     alignSelf: "flex-end",
+  },
+  button: {
+    backgroundColor: "#0782F9",
+    width: "60%",
+    padding: 15,
+    borderRadius: 10,
+    alignItems: "center",
+    alignSelf: "center",
+    marginTop: 50,
+  },
+  buttonText: {
+    color: "white",
+    fontWeight: "700",
+    fontSize: 16,
   },
 });

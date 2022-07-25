@@ -139,20 +139,23 @@ function SurveyItem({
       {loaded != true && <Text>Loading...</Text>}
       {loaded == true && (
         <View>
-          <Text style={styles.title}>{title}</Text>
+          <View style={styles.contentView}>
+            <Text style={styles.title}>{title}</Text>
+            <Text style={styles.description}>{description}</Text>
+          </View>
 
           <Text style={styles.field}>{field}</Text>
 
-          <Text style={styles.posted}>Posted by: </Text>
-          <Text style={styles.user}>{user}</Text>
+          <Text style={styles.posted}>Posted by: {user}</Text>
 
-          <Text style={styles.description}>{description}</Text>
-          <RenderButtons />
-          {self == true && <Text>{status}</Text>}
-
-          <Text style={styles.coinsReward}>{coinsReward}</Text>
+          <Text style={styles.coinsReward}>{coinsReward} coins</Text>
           {/* if bookmarked then display a star icon on top right of item */}
           {bookmarked == true && <Text>Bookmarked</Text>}
+
+          <View style={styles.bottomView}>
+            {self == true && <Text style={styles.status}>{status}</Text>}
+            <RenderButtons />
+          </View>
         </View>
       )}
     </SafeAreaView>
@@ -170,16 +173,21 @@ const styles = StyleSheet.create({
     borderColor: "white",
     backgroundColor: "#ADDBE6",
   },
+  contentView: {
+    alignItems: "baseline",
+    marginTop: 25,
+    marginLeft: 20,
+    marginBottom: 15,
+  },
 
   title: {
-    padding: 30,
     marginTop: 5,
     fontSize: 16,
     fontFamily: "InknutAntiqua_700Bold",
   },
   field: {
     padding: 4,
-    marginTop: 15,
+    marginTop: 10,
     marginLeft: 10,
     position: "absolute",
     left: 0,
@@ -190,51 +198,33 @@ const styles = StyleSheet.create({
     backgroundColor: "#6D9CCF",
   },
   posted: {
-    padding: 20,
-    position: "absolute",
-    bottom: 0,
-    marginLeft: 15,
+    marginLeft: 20,
+    marginBottom: 15,
     fontSize: 10,
     fontFamily: "OpenSans_400Regular",
   },
   user: {
-    padding: 20,
-    position: "absolute",
-    bottom: 0,
     marginLeft: 70,
     fontSize: 10,
     fontFamily: "OpenSans_400Regular_Italic",
   },
   description: {
-    marginTop: 100,
-    position: "absolute",
-  },
-  coinsReward: {
-    padding: 30,
-    marginTop: 45,
-    position: "absolute",
-    alignContent: "center",
     fontSize: 12,
   },
-  buttonleft: {
-    padding: 6,
+  coinsReward: {
+    padding: 15,
     position: "absolute",
-    left: 0,
-    bottom: 0,
-    marginBottom: 15,
-    marginLeft: 20,
-    borderRadius: 20,
-    fontSize: 10,
-    fontFamily: "OpenSans_700Bold",
-    backgroundColor: "#C7755A",
-  },
-  buttonright: {
-    padding: 6,
-    position: "absolute",
+    top: 0,
     right: 0,
-    bottom: 0,
-    marginBottom: 15,
-    marginRight: 20,
+    fontSize: 12,
+    fontFamily: "OpenSans_700Bold",
+  },
+
+  buttonright: {
+    padding: 5,
+    width: "40%",
+    alignSelf: "flex-end",
+    marginLeft: 60,
     borderRadius: 20,
     fontSize: 10,
     fontFamily: "OpenSans_700Bold",
@@ -244,6 +234,21 @@ const styles = StyleSheet.create({
     fontSize: 10,
     fontFamily: "OpenSans_700Bold",
     color: "white",
+    textAlign: "center",
+  },
+
+  status: {
+    marginTop: 2,
+    marginLeft: 15,
+    width: 80,
+    fontSize: 13,
+    fontFamily: "OpenSans_400Regular_Italic",
+  },
+
+  bottomView: {
+    flexDirection: "row",
+    marginTop: 5,
+    padding: 5,
   },
 });
 

@@ -187,6 +187,55 @@ const SchoolTagScreen = ({ navigation }) => {
       .catch((e) => alert(e.message));
   };
 
+  const [fileResponse, setFileResponse] = useState([]);
+  const pickDocument = useCallback(async () => {
+    try {
+      const response = await DocumentPicker.pick({
+        presentationStyle: "fullScreen",
+      });
+      setFileResponse(response);
+    } catch (err) {
+      console.warn(err);
+    }
+  }, []);
+  // async () => {
+  // let result = await DocumentPicker.getDocumentAsync({
+  //   type: "*/*",
+  //   copyToCacheDirectory: true,
+  // }).then((response) => {
+  //   if (response.type == "success") {
+  //     let { name, size, uri } = response;
+  //     let nameParts = name.split(".");
+  //     let fileType = nameParts[nameParts.length - 1];
+  //     var fileToUpload = {
+  //       name: name,
+  //       size: size,
+  //       uri: uri,
+  //       type: "application/" + fileType,
+  //     };
+  //     console.log(fileToUpload, "...............file");
+  //     setDoc(fileToUpload);
+  //   }
+  // });
+  // console.log(result);
+  // console.log("Doc: " + doc.uri);
+  // };
+
+  const postDocument = () => {
+    const fileUri = fileResponse.uri;
+
+    const fileExt = fileUri.split(".").pop();
+
+    console.log(fileExt);
+    var uid = uuid.v4();
+    const fileName = `${uid}.${fileExt}`;
+    const storage = getStorage();
+    const storageRef = ref(storage, `Education Certificates/${fileName}`);
+    uploadBytes(storageRef, fileUri).then((snapshot) => {
+      console.log("Uploaded a blob or file!");
+    });
+  };
+
   return (
     <SafeAreaView style={styles.inputContainer}>
       <DropDownPicker
@@ -261,6 +310,26 @@ const SchoolTagScreen = ({ navigation }) => {
           maxHeight={80}
         />
       </View>
+      <SafeAreaView style={styles.container}>
+        {fileResponse.map((file, index) => (
+          <Text
+            key={index.toString()}
+            style={styles.uri}
+            numberOfLines={1}
+            ellipsizeMode={"middle"}
+          >
+            {file?.uri}
+          </Text>
+        ))}
+      </SafeAreaView>
+
+      {/* <TouchableOpacity style={styles.upload} onPress={pickDocument}>
+        <Text>Select File</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity style={styles.upload} onPress={postDocument}>
+        <Text>Upload File</Text>
+      </TouchableOpacity> */}
 
       <TouchableOpacity onPress={handleCreate} style={[styles.tagbutton]}>
         <Text style={styles.buttonText}>Create Tag</Text>
@@ -310,5 +379,13 @@ const styles = StyleSheet.create({
     color: "white",
     fontWeight: "700",
     fontSize: 16,
+  },
+  upload: {
+    backgroundColor: "lightgrey",
+    alignSelf: "center",
+    padding: 5,
+    borderRadius: 10,
+    marginBottom: 20,
+    zIndex: -3,
   },
 });

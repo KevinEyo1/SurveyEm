@@ -46,6 +46,7 @@ const RewardsScreen = ({ navigation }) => {
 
   useEffect(() => {
     getRewards();
+    getCoins();
   }, [coins]);
 
   const getRewards = async () => {
@@ -101,7 +102,7 @@ const RewardsScreen = ({ navigation }) => {
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
       <ScrollView style={{ padding: 10 }}>
         <View>
-          <Text style={styles.coinText}>{coins}</Text>
+          <Text style={styles.coinText}>Available coins: {coins}</Text>
         </View>
         <View>
           {rewardItems.length == 0 && <Text>No more rewards to redeem.</Text>}
@@ -128,7 +129,12 @@ export default RewardsScreen;
 const styles = StyleSheet.create({
   coinText: {
     backgroundColor: "lightgrey",
-    fontSize: 20,
+    fontSize: 16,
     alignSelf: "flex-end",
+    marginBottom: 20,
+    marginRight: 10,
+    fontFamily: "OpenSans_700Bold",
+    padding: 10,
+    borderRadius: 20,
   },
 });

@@ -16,8 +16,10 @@ function IndexScreen({ navigation }) {
   return (
     <SafeAreaView style={styles.background}>
       <View style={styles.logoContainer}>
-        <Image source={require("../assets/favicon.png")} style={styles.logo} />
-        <Text style={styles.logoName}>SurveyEm</Text>
+        <Image
+          source={require("../assets/SurveyEm-logo.png")}
+          style={styles.logo}
+        />
       </View>
       <TouchableOpacity
         style={styles.button}
@@ -42,8 +44,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   logo: {
-    height: 100,
-    width: 100,
+    marginBottom: 5,
+    height: 250,
+    width: 250,
+    alignSelf: "center",
   },
   logoName: {
     fontSize: 20,

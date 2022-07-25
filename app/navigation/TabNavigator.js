@@ -39,7 +39,7 @@ function TabNavigator({ navigation }) {
         }}
       />
       <Tab.Screen
-        name="SurveyStack"
+        name="Survey Area"
         component={SurveyStack}
         options={{
           tabBarShowLabel: false,
@@ -49,7 +49,7 @@ function TabNavigator({ navigation }) {
         }}
       />
       <Tab.Screen
-        name="CreateStack"
+        name="Create Items"
         component={CreateStack}
         options={{
           tabBarShowLabel: false,
@@ -60,7 +60,7 @@ function TabNavigator({ navigation }) {
         }}
       />
       <Tab.Screen
-        name="ProjectStack"
+        name="Project Area"
         component={ProjectStack}
         options={{
           tabBarShowLabel: false,

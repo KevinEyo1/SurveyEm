@@ -40,8 +40,10 @@ const LoginScreen = () => {
   return (
     <KeyboardAvoidingView style={styles.container} behaviour="padding">
       <View>
-        <Image source={require("../assets/favicon.png")} style={styles.logo} />
-        <Text style={styles.logoName}>SurveyEm</Text>
+        <Image
+          source={require("../assets/SurveyEm-logo.png")}
+          style={styles.logo}
+        />
       </View>
       <View style={styles.inputContainer}>
         <TextInput
@@ -125,6 +127,8 @@ const styles = StyleSheet.create({
   },
   logo: {
     marginBottom: 5,
+    height: 150,
+    width: 150,
   },
   logoName: {
     marginBottom: 30,
