@@ -4,6 +4,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import ProjectScreen from "../screens/ProjectScreen";
 import SingleProjectSurveyScreen from "../screens/SingleProjectSurveyScreen";
 import DoSurveyQuestionsScreen from "../screens/DoSurveyQuestionsScreen";
+import ProjectCommentScreen from "../screens/ProjectCommentScreen";
 
 const Stack = createStackNavigator();
 
@@ -22,7 +23,7 @@ function ProjectStack({ navigation }) {
         name="DoSurveyQuestions"
         component={DoSurveyQuestionsScreen}
       />
-      {/* add screen for comments */}
+      <Stack.Screen name="ProjectComment" component={ProjectCommentScreen} />
     </Stack.Navigator>
   );
 }

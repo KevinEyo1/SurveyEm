@@ -4,12 +4,9 @@ import {
   View,
   SafeAreaView,
   TouchableOpacity,
-  Alert,
   TextInput,
 } from "react-native";
 import { React, useState, useEffect, useCallback } from "react";
-
-import { getStorage, ref, uploadBytesResumable } from "firebase/storage";
 
 import DropDownPicker from "react-native-dropdown-picker";
 
@@ -26,106 +23,81 @@ import {
   arrayRemove,
 } from "firebase/firestore";
 
-const SchoolTagScreen = ({ navigation }) => {
-  const [tagValue, setTagValue] = useState(0);
+import { getStorage, ref, uploadBytes } from "firebase/storage";
+
+const WorkTagScreen = ({ navigation }) => {
+  const [orgOpen, setOrgOpen] = useState(false);
+  const [orgItems, setOrgItems] = useState([]);
+  const [orgValue, setOrgValue] = useState(null);
+
+  const [posOpen, setPosOpen] = useState(false);
+  const [posItems, setPosItems] = useState([]);
+  const [posValue, setPosValue] = useState(null);
+
+  const [tags, setTags] = useState([]);
+  const [tagOpen, setTagOpen] = useState(false);
+  const [selectedTags, setSelectedTags] = useState([]);
 
   const [yearOpen, setYearOpen] = useState(false);
   const [yearValue, setYearValue] = useState(null);
   const [yearItems, setYearItems] = useState([
-    { label: "1", value: 1 },
-    { label: "2", value: 2 },
-    { label: "3", value: 3 },
-    { label: "4", value: 4 },
-    { label: "5", value: 5 },
-    { label: "6", value: 6 },
-    { label: "7", value: 7 },
-    { label: "8", value: 8 },
+    { label: "1-5", value: 4 },
+    { label: "5-8", value: 6 },
+    { label: "8-12", value: 8 },
+    { label: "12-16", value: 10 },
+    { label: "16-20", value: 12 },
+    { label: ">20", value: 14 },
   ]);
-
-  const [majorOpen, setMajorOpen] = useState(false);
-  const [majorValue, setMajorValue] = useState(null);
-  const [majorItems, setMajorItems] = useState([
-    { label: "Major", value: 4 },
-    { label: "Minor", value: 1 },
-  ]);
-
-  const [tags, setTags] = useState([]);
-  const [tagOpen, setTagOpen] = useState(false);
-  const [selectedTags, setSelectedTags] = useState("");
-
-  const [schools, setSchools] = useState([]);
-  const [schoolOpen, setSchoolOpen] = useState(false);
-  const [selectedSchools, setSelectedSchools] = useState("");
-
-  const [eduOpen, setEduOpen] = useState(false);
-  const [eduValue, setEduValue] = useState(null);
-  const [eduItems, setEduItems] = useState([
-    { label: "Undergraduate", value: 1 },
-    { label: "Degree", value: 2 },
-    { label: "Masters", value: 4 },
-    { label: "Ph.D", value: 8 },
-  ]);
-
-  const onSchoolOpen = useCallback(() => {
-    setYearOpen(false);
-    setEduOpen(false);
-    setMajorOpen(false);
-    setTagOpen(false);
-  });
 
   const onYearOpen = useCallback(() => {
-    setEduOpen(false);
+    setPosOpen(false);
     setTagOpen(false);
-    setMajorOpen(false);
-    setSchoolOpen(false);
+    setOrgOpen(false);
   });
 
-  const onEduOpen = useCallback(() => {
+  const onPosOpen = useCallback(() => {
     setYearOpen(false);
     setTagOpen(false);
-    setMajorOpen(false);
-    setSchoolOpen(false);
+    setOrgOpen(false);
+  });
+
+  const onOrgOpen = useCallback(() => {
+    setPosOpen(false);
+    setTagOpen(false);
+    setYearOpen(false);
   });
 
   const onTagOpen = useCallback(() => {
+    setPosOpen(false);
     setYearOpen(false);
-    setEduOpen(false);
-    setMajorOpen(false);
-    setSchoolOpen(false);
-  });
-
-  const onMajorOpen = useCallback(() => {
-    setYearOpen(false);
-    setTagOpen(false);
-    setEduOpen(false);
-    setSchoolOpen(false);
+    setOrgOpen(false);
   });
 
   useEffect(() => {
     getTags();
-    getSchools();
+    getPos();
+    getOrg();
   }, []);
 
+  const [tagValue, setTagValue] = useState(0);
   const handleCreate = async () => {
     if (
       yearValue == null ||
-      eduValue == null ||
-      majorValue == null ||
-      selectedSchools == "" ||
+      posValue == null ||
+      orgValue == null ||
       selectedTags == ""
     ) {
       Alert.alert("Missing Fields.");
     } else {
-      setTagValue(yearValue + majorValue + eduValue);
+      setTagValue(yearValue + posValue);
       const userRef = doc(db, "users", auth.currentUser.uid);
       updateDoc(userRef, {
         tagApplications: arrayUnion({
-          type: "School",
-          school: selectedSchools,
+          type: "Work",
           field: selectedTags,
           year: yearValue,
-          major: majorValue,
-          edu: eduValue,
+          pos: posValue,
+          org: orgValue,
           approved: true,
         }),
       });
@@ -170,42 +142,72 @@ const SchoolTagScreen = ({ navigation }) => {
           list.push({ label: tag.data().tag, value: tag.data().tag });
         });
         setTags(list);
+        console.log(list);
       })
       .catch((e) => alert(e.message));
   };
 
-  const getSchools = () => {
+  const getOrg = () => {
     const list = [];
-    const schQuerySnapshot = getDocs(collection(db, "schools"));
-    schQuerySnapshot
+    const orgQuerySnapshot = getDocs(collection(db, "workplaces"));
+    orgQuerySnapshot
       .then((q) => {
-        q.forEach((sch) => {
-          list.push({ label: sch.data().name, value: sch.data().name });
+        q.forEach((org) => {
+          list.push({ label: org.data().name, value: org.data().name });
         });
-        setSchools(list);
+        setOrgItems(list);
+        console.log(list);
+      })
+      .catch((e) => alert(e.message));
+  };
+
+  const getPos = () => {
+    const list = [];
+    const posQuerySnapshot = getDocs(collection(db, "workplacePositions"));
+    posQuerySnapshot
+      .then((q) => {
+        q.forEach((pos) => {
+          list.push({ label: pos.data().name, value: pos.data().tagPoint });
+        });
+        setPosItems(list);
+        console.log(list);
       })
       .catch((e) => alert(e.message));
   };
 
   return (
     <SafeAreaView style={styles.inputContainer}>
+      <Text>Organisation</Text>
       <DropDownPicker
         style={styles.dropdown}
-        placeholder="School of Study"
-        open={schoolOpen}
-        value={selectedSchools}
-        items={schools}
-        onOpen={onSchoolOpen}
-        setOpen={setSchoolOpen}
-        setValue={setSelectedSchools}
-        setItems={setSchools}
+        open={orgOpen}
+        value={orgValue}
+        items={orgItems}
+        onOpen={onOrgOpen}
+        setOpen={setOrgOpen}
+        setValue={setOrgValue}
+        setItems={setOrgItems}
         maxHeight={80}
       />
-
       <View style={{ zIndex: -0.5 }}>
+        <Text>Position</Text>
         <DropDownPicker
           style={styles.dropdown}
-          placeholder="Year of Study"
+          open={posOpen}
+          value={posValue}
+          items={posItems}
+          onOpen={onPosOpen}
+          setOpen={setPosOpen}
+          setValue={setPosValue}
+          setItems={setPosItems}
+          maxHeight={80}
+        />
+      </View>
+
+      <View style={{ zIndex: -1 }}>
+        <Text>Years of Experience</Text>
+        <DropDownPicker
+          style={styles.dropdown}
           open={yearOpen}
           value={yearValue}
           items={yearItems}
@@ -217,25 +219,10 @@ const SchoolTagScreen = ({ navigation }) => {
         />
       </View>
 
-      <View style={{ zIndex: -1.5 }}>
-        <DropDownPicker
-          style={styles.dropdown}
-          placeholder="Major/Minor"
-          open={majorOpen}
-          value={majorValue}
-          items={majorItems}
-          onOpen={onMajorOpen}
-          setOpen={setMajorOpen}
-          setValue={setMajorValue}
-          setItems={setMajorItems}
-          maxHeight={80}
-        />
-      </View>
-
       <View style={{ zIndex: -2 }}>
+        <Text>Field of Expertise</Text>
         <DropDownPicker
           style={styles.dropdown}
-          placeholder="Field of Study"
           open={tagOpen}
           value={selectedTags}
           items={tags}
@@ -247,21 +234,6 @@ const SchoolTagScreen = ({ navigation }) => {
         />
       </View>
 
-      <View style={{ zIndex: -3 }}>
-        <DropDownPicker
-          style={styles.dropdown}
-          placeholder="Education Level"
-          open={eduOpen}
-          value={eduValue}
-          items={eduItems}
-          onOpen={onEduOpen}
-          setOpen={setEduOpen}
-          setValue={setEduValue}
-          setItems={setEduItems}
-          maxHeight={80}
-        />
-      </View>
-
       <TouchableOpacity onPress={handleCreate} style={[styles.tagbutton]}>
         <Text style={styles.buttonText}>Create Tag</Text>
       </TouchableOpacity>
@@ -269,19 +241,13 @@ const SchoolTagScreen = ({ navigation }) => {
   );
 };
 
-export default SchoolTagScreen;
+export default WorkTagScreen;
 
 const styles = StyleSheet.create({
-  input: {
-    backgroundColor: "#E6E6E6",
-    paddingHorizontal: 15,
-    paddingVertical: 10,
-    borderRadius: 10,
-    bottom: 30,
-  },
   inputContainer: {
     padding: 20,
-    marginTop: 60,
+    marginTop: 20,
+    width: "80%",
   },
   dropdown: {
     padding: 15,
@@ -296,19 +262,16 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     zIndex: -3,
   },
-  tagbutton: {
-    backgroundColor: "#0782F9",
-    width: "90%",
-    padding: 15,
-    borderRadius: 10,
-    top: 50,
-    alignItems: "center",
-    alignSelf: "center",
-    zIndex: -3,
-  },
   buttonText: {
     color: "white",
     fontWeight: "700",
     fontSize: 16,
+  },
+  input: {
+    backgroundColor: "white",
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    borderRadius: 10,
+    marginTop: 5,
   },
 });
