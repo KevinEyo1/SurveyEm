@@ -8,12 +8,12 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import TagStack from "./TagStack";
 import MyRewardsScreen from "../screens/MyRewardsScreen";
 import LogoutScreen from "../screens/LogoutScreen";
-import ProfileScreen from "../screens/ProfileScreen";
 
 // import { auth } from "../../firebase";
 // import { signOut } from "firebase/auth";
 
 import TabNavigator from "./TabNavigator";
+import ProfileScreen from "../screens/ProfileScreen";
 import AuthStack from "./AuthStack";
 
 const Drawer = createDrawerNavigator();
@@ -30,6 +30,7 @@ function AppStack() {
           ),
         }}
       />
+
       <Drawer.Screen
         name="Profile"
         component={ProfileScreen}

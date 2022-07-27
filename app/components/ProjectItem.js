@@ -27,30 +27,32 @@ function ProjectItem({ pid, title, tag, description, user, self }) {
         </View>
       )}
 
-      <TouchableOpacity
-        style={styles.rightbutton}
-        onPress={() =>
-          navigation.navigate("ProjectComment", {
-            pid: pid,
-            self: self,
-            title: title,
-            tag: tag,
-            description: description,
-            user: user,
-          })
-        }
-      >
-        <Text style={styles.buttonContent}>View Comments</Text>
-      </TouchableOpacity>
+      <View style={styles.buttonView}>
+        <TouchableOpacity
+          style={[styles.button, styles.viewButton]}
+          onPress={() =>
+            navigation.navigate("SingleProjectSurvey", { pid: pid, self: self })
+          }
+        >
+          <Text style={styles.buttonContent}>View Surveys</Text>
+        </TouchableOpacity>
 
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() =>
-          navigation.navigate("SingleProjectSurvey", { pid: pid, self: self })
-        }
-      >
-        <Text style={styles.buttonContent}>View Surveys</Text>
-      </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.button, styles.commentsButton]}
+          onPress={() =>
+            navigation.navigate("ProjectComment", {
+              pid: pid,
+              self: self,
+              title: title,
+              tag: tag,
+              description: description,
+              user: user,
+            })
+          }
+        >
+          <Text style={styles.buttonContent}>View Comments</Text>
+        </TouchableOpacity>
+      </View>
     </SafeAreaView>
   );
 }
@@ -132,11 +134,12 @@ const styles = StyleSheet.create({
     fontFamily: "OpenSans_700Bold",
     backgroundColor: "#C7755A",
   },
+
   viewButton: {
-    marginLeft: 10,
+    marginLeft: 195,
   },
   commentsButton: {
-    marginLeft: 95,
+    right: 250,
   },
   buttonContent: {
     fontSize: 10,

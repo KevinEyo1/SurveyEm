@@ -1,11 +1,20 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 
-function ProjectCommentItem({ user, tagField, tagValue, comment }) {
+function ProjectCommentItem({ username, tagField, tagValue, comment }) {
   return (
     <View style={styles.container}>
-      <Text style={styles.user}>{user}</Text>
-      {tagField != null && <View>{/* insert tagfield and tagvalue */}</View>}
+      <View style={styles.userView}>
+        <Text style={styles.user}>Posted by: {username}</Text>
+        {tagField != null && (
+          <View style={styles.tagContainer}>
+            <Text style={styles.tag}>
+              {tagField}: {tagValue}
+            </Text>
+          </View>
+        )}
+      </View>
+
       <Text style={styles.comment}>{comment}</Text>
     </View>
   );
@@ -17,17 +26,34 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: "lightgrey",
     padding: 10,
-    alignSelf: "center",
+    borderWidth: 2,
+    borderColor: "black",
+    width: "100%",
+    // alignSelf: "center",
   },
   user: {
-    fontSize: 10,
-    left: 0,
+    fontSize: 15,
     padding: 5,
   },
 
+  tag: {
+    fontSize: 15,
+  },
+  tagContainer: {
+    top: 5,
+    borderWidth: 1,
+    right: -100,
+  },
+
   comment: {
-    fontSize: 20,
+    fontSize: 15,
     textAlign: "justify",
     padding: 5,
+  },
+
+  userView: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "baseline",
   },
 });
