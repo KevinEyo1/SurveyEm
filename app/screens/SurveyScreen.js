@@ -12,7 +12,6 @@ import {
 } from "react-native";
 
 import SurveyItem from "../components/SurveyItem";
-import ViewSurveyItem from "../components/ViewSurveyItem";
 import CustomSwitch from "../components/CustomSwitch";
 
 import { onAuthStateChanged } from "firebase/auth";
@@ -158,7 +157,7 @@ const SurveyScreen = ({ navigation }) => {
           surveyItems.length != 0 &&
           loaded == true &&
           surveyItems.map((survey) => (
-            <ViewSurveyItem
+            <SurveyItem
               key={survey.id}
               sid={survey.id}
               title={survey.title}
@@ -167,13 +166,13 @@ const SurveyScreen = ({ navigation }) => {
               coinsReward={survey.coinsReward}
               self={false}
               status={survey.status}
-            ></ViewSurveyItem>
+            ></SurveyItem>
           ))}
         {currentTab == 2 &&
           bookmarkedItems.length != 0 &&
           bookLoaded == true &&
           bookmarkedItems.map((survey) => (
-            <ViewSurveyItem
+            <SurveyItem
               key={survey.id}
               sid={survey.id}
               title={survey.title}
@@ -182,7 +181,7 @@ const SurveyScreen = ({ navigation }) => {
               coinsReward={survey.coinsReward}
               self={false}
               status={survey.status}
-            ></ViewSurveyItem>
+            ></SurveyItem>
           ))}
       </ScrollView>
     </SafeAreaView>

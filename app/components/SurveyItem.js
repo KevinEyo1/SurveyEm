@@ -7,6 +7,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   Alert,
+  Image,
 } from "react-native";
 
 import { auth, db } from "../../firebase";
@@ -121,14 +122,17 @@ function SurveyItem({
       // status == "Published"
       if (bookmarked) {
         return (
-          <TouchableOpacity style={styles.buttonright} onPress={doSurvey}>
-            <Text style={styles.buttonContent}>Do Survey</Text>
+          <TouchableOpacity style={styles.buttonBookmark} onPress={doSurvey}>
+            <Text style={styles.bookmarkContent}>Do Survey</Text>
           </TouchableOpacity>
         );
       } else {
         return (
-          <TouchableOpacity style={styles.buttonright} onPress={bookmarkSurvey}>
-            <Text style={styles.buttonContent}>Bookmark Survey</Text>
+          <TouchableOpacity
+            style={styles.buttonBookmark}
+            onPress={bookmarkSurvey}
+          >
+            <Text style={styles.bookmarkContent}>Bookmark Survey</Text>
           </TouchableOpacity>
         );
       }
@@ -150,9 +154,14 @@ function SurveyItem({
 
           <Text style={styles.coinsReward}>{coinsReward} coins</Text>
           {/* if bookmarked then display a star icon on top right of item */}
-          {bookmarked == true && <Text>Bookmarked</Text>}
+          {bookmarked == true && (
+            <Image
+              source={require("../assets/star.png")}
+              style={styles.image}
+            />
+          )}
 
-          <View style={styles.bottomView}>
+          <View>
             {self == true && <Text style={styles.status}>{status}</Text>}
             <RenderButtons />
           </View>
@@ -181,7 +190,7 @@ const styles = StyleSheet.create({
   },
 
   title: {
-    marginTop: 5,
+    marginTop: 7,
     fontSize: 16,
     fontFamily: "InknutAntiqua_700Bold",
   },
@@ -199,7 +208,7 @@ const styles = StyleSheet.create({
   },
   posted: {
     marginLeft: 20,
-    marginBottom: 15,
+    marginBottom: 5,
     fontSize: 10,
     fontFamily: "OpenSans_400Regular",
   },
@@ -214,8 +223,8 @@ const styles = StyleSheet.create({
   coinsReward: {
     padding: 15,
     position: "absolute",
-    top: 0,
-    right: 0,
+    bottom: -10,
+    left: 0,
     fontSize: 12,
     fontFamily: "OpenSans_700Bold",
   },
@@ -239,7 +248,7 @@ const styles = StyleSheet.create({
 
   status: {
     marginTop: 2,
-    marginLeft: 15,
+    marginLeft: 200,
     width: 80,
     fontSize: 13,
     fontFamily: "OpenSans_400Regular_Italic",
@@ -249,6 +258,35 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     marginTop: 5,
     padding: 5,
+  },
+
+  image: {
+    flex: 1,
+    width: 10,
+    height: 10,
+    padding: 20,
+    marginRight: 10,
+    marginTop: 10,
+    position: "absolute",
+    top: 0,
+    right: 0,
+  },
+
+  buttonBookmark: {
+    padding: 5,
+    width: "40%",
+    // position: "absolute",
+    marginLeft: 150,
+    borderRadius: 20,
+    fontSize: 10,
+    fontFamily: "OpenSans_700Bold",
+    backgroundColor: "#C7755A",
+  },
+  bookmarkContent: {
+    fontSize: 10,
+    fontFamily: "OpenSans_700Bold",
+    color: "white",
+    textAlign: "center",
   },
 });
 
