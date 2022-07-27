@@ -87,6 +87,14 @@ const ProjectCommentScreen = ({ route, navigation }) => {
       <View style={styles.container}>
         {/* display top section, user, desc, tag, title
          */}
+        <View style={styles.contentView}>
+          <Text style={styles.title}>{title}</Text>
+          <Text style={styles.description}>{description}</Text>
+        </View>
+        <View style={styles.userView}>
+          <Text style={styles.user}>{user}</Text>
+          <Text style={styles.tag}>{tag}</Text>
+        </View>
       </View>
 
       <View style={styles.add}>
@@ -130,6 +138,24 @@ const styles = StyleSheet.create({
     marginTop: 30,
   },
 
+  title: {
+    fontSize: 20,
+    fontFamily: "InknutAntiqua_700Bold",
+    width: "100%",
+  },
+
+  description: {
+    fontSize: 16,
+  },
+
+  contentView: {
+    alignItems: "baseline",
+    padding: 12,
+    marginTop: 25,
+    marginLeft: 20,
+    marginBottom: 30,
+  },
+
   add: {
     alignSelf: "center",
     flexDirection: "row",
@@ -157,5 +183,22 @@ const styles = StyleSheet.create({
   disclaimer: {
     textAlign: "center",
     fontSize: 12,
+  },
+
+  userView: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "baseline",
+  },
+
+  user: {
+    marginLeft: 10,
+  },
+  tag: {
+    marginLeft: 95,
+  },
+  bottomContent: {
+    fontSize: 16,
+    fontFamily: "OpenSans_700Bold",
   },
 });

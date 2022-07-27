@@ -76,17 +76,18 @@ const CreateProjectScreen = ({ navigation }) => {
       </View>
       <View style={styles.inputContainer}>
         <TextInput
-          placeholder="Title"
+          placeholder="Title (max 20 characters)"
           value={title}
           onChangeText={(text) => setTitle(text)}
           style={styles.input}
+          maxLength={20}
         />
       </View>
 
       <View style={styles.inputContainer}>
         <TextInput
-          placeholder="Description (max 40 words)"
-          maxLength={40}
+          placeholder="Description (max 100 characters)"
+          maxLength={100}
           value={description}
           onChangeText={(text) => setDescription(text)}
           style={styles.input}

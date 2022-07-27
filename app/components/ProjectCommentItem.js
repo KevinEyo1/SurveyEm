@@ -4,8 +4,18 @@ import React from "react";
 function ProjectCommentItem({ user, tagField, tagValue, comment }) {
   return (
     <View style={styles.container}>
-      <Text style={styles.user}>{user}</Text>
-      {tagField != null && <View>{/* insert tagfield and tagvalue */}</View>}
+      <View style={styles.userView}>
+        <Text style={styles.user}>{user}</Text>
+        {tagField != null && (
+          <View>
+            {/* insert tagfield and tagvalue */}
+            <Text style={styles.tag}>
+              {tagField}: {tagValue}
+            </Text>
+          </View>
+        )}
+      </View>
+
       <Text style={styles.comment}>{comment}</Text>
     </View>
   );
@@ -21,13 +31,22 @@ const styles = StyleSheet.create({
   },
   user: {
     fontSize: 10,
-    left: 0,
     padding: 5,
   },
 
+  tag: {
+    fontSize: 10,
+  },
+
   comment: {
-    fontSize: 20,
+    fontSize: 12,
     textAlign: "justify",
     padding: 5,
+  },
+
+  userView: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "baseline",
   },
 });

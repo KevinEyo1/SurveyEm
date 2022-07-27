@@ -187,9 +187,9 @@ const styles = StyleSheet.create({
   },
 
   title: {
-    marginTop: 5,
-    fontSize: 16,
+    fontSize: 13,
     fontFamily: "InknutAntiqua_700Bold",
+    width: "100%",
   },
   field: {
     padding: 4,

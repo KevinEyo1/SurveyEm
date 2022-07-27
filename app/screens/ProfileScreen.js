@@ -19,9 +19,10 @@ const ProfileScreen = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [occupation, setOccupation] = useState("");
-  const [ownedTags, setOwnedTags] = useState("");
+  const [ownedTags, setOwnedTags] = useState([]);
   const [username, setUsername] = useState("-");
   const [workplace, setWorkplace] = useState("");
+  const [coins, setCoins] = useState(0);
   const [year, setYear] = useState(0);
   const [type, setType] = useState("");
 
@@ -29,7 +30,7 @@ const ProfileScreen = () => {
 
   useEffect(() => {
     getFirstName();
-  });
+  }, []);
 
   function getFirstName() {
     const list = [];
@@ -41,6 +42,10 @@ const ProfileScreen = () => {
         setOccupation(q.data().occupation);
         setLastName(q.data().lastName);
         setUsername(q.data().username);
+        setCoins(q.data().coins);
+        console.log(q.data().ownedTags);
+        const arr = q.data().ownedTags.filter((x) => x.approved == true);
+        setOwnedTags(arr);
       })
       .catch((e) => alert(e.message));
   }
@@ -58,6 +63,15 @@ const ProfileScreen = () => {
         <View style={styles.field}>
           <Text style={styles.title}>Last Name:</Text>
           <Text style={styles.lastName}>{lastName}</Text>
+        </View>
+        <View>
+          {ownedTags.length != 0 &&
+            ownedTags.map((x) => (
+              <View>
+                <Text>{x.tagField}</Text>
+                <Text>{x.tagValue}</Text>
+              </View>
+            ))}
         </View>
       </View>
 

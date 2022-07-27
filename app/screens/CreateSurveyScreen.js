@@ -98,10 +98,11 @@ const CreateSurveyScreen = () => {
 
       <View style={styles.inputContainer}>
         <TextInput
-          placeholder="Title"
+          placeholder="Title (max 20 characters)"
           value={title}
           onChangeText={(text) => setTitle(text)}
           style={styles.input}
+          maxLength={20}
         />
       </View>
 

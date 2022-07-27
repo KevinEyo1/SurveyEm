@@ -20,6 +20,8 @@ import {
   OpenSans_400Regular,
 } from "@expo-google-fonts/open-sans";
 
+import ProfileScreen from "./app/screens/ProfileScreen";
+
 export default function App() {
   let [fontsLoaded] = useFonts({
     InknutAntiqua_700Bold,
