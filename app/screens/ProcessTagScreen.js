@@ -5,7 +5,8 @@ const ProcessTagScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <Text style={{ fontSize: 20, textAlign: "center" }}>
-        The information given is being processed.{" "}
+        Thanks for your submission. Our staff will contact the relevant schools
+        and organizations to check your submission credibility.{" "}
       </Text>
 
       <TouchableOpacity

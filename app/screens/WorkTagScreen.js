@@ -13,12 +13,19 @@ import DropDownPicker from "react-native-dropdown-picker";
 import * as DocumentPicker from "expo-document-picker";
 
 import { auth, db } from "../../firebase";
-import { getDocs, collection } from "firebase/firestore";
+import {
+  getDocs,
+  collection,
+  doc,
+  getDoc,
+  updateDoc,
+  arrayUnion,
+  arrayRemove,
+} from "firebase/firestore";
 
 import { getStorage, ref, uploadBytes } from "firebase/storage";
 
 const WorkTagScreen = ({ navigation }) => {
-  const [url, setUrl] = useState("");
   const [orgOpen, setOrgOpen] = useState(false);
   const [orgItems, setOrgItems] = useState([]);
   const [orgValue, setOrgValue] = useState(null);
@@ -34,12 +41,12 @@ const WorkTagScreen = ({ navigation }) => {
   const [yearOpen, setYearOpen] = useState(false);
   const [yearValue, setYearValue] = useState(null);
   const [yearItems, setYearItems] = useState([
-    { label: "1-5", value: 1 },
-    { label: "5-8", value: 2 },
-    { label: "8-12", value: 3 },
-    { label: "12-16", value: 4 },
-    { label: "16-20", value: 5 },
-    { label: ">20", value: 6 },
+    { label: "1-5", value: 4 },
+    { label: "5-8", value: 6 },
+    { label: "8-12", value: 8 },
+    { label: "12-16", value: 10 },
+    { label: "16-20", value: 12 },
+    { label: ">20", value: 14 },
   ]);
 
   const onYearOpen = useCallback(() => {
@@ -66,24 +73,64 @@ const WorkTagScreen = ({ navigation }) => {
     setOrgOpen(false);
   });
 
-  const [doc, setDoc] = useState();
-  const storage = getStorage();
-  const storageRef = ref(storage, "Education Certificates");
-
   useEffect(() => {
     getTags();
     getPos();
     getOrg();
-    getStorage();
   }, []);
 
-  DropDownPicker.setMode("BADGE");
-
-  const tagValue = posValue + yearValue;
-
-  const handleCreate = () => {
-    console.log("%s: " + tagValue + ", " + orgValue, selectedTags);
-    navigation.navigate("ProcessTag");
+  const [tagValue, setTagValue] = useState(0);
+  const handleCreate = async () => {
+    if (
+      yearValue == null ||
+      posValue == null ||
+      orgValue == null ||
+      selectedTags == ""
+    ) {
+      Alert.alert("Missing Fields.");
+    } else {
+      setTagValue(yearValue + posValue);
+      const userRef = doc(db, "users", auth.currentUser.uid);
+      updateDoc(userRef, {
+        tagApplications: arrayUnion({
+          type: "Work",
+          field: selectedTags,
+          year: yearValue,
+          pos: posValue,
+          org: orgValue,
+          approved: true,
+        }),
+      });
+      const userDoc = getDoc(userRef);
+      userDoc.then((q) => {
+        const tagVs = q
+          .data()
+          .ownedTags.find((x) => x.tagField == selectedTags);
+        if (tagVs != undefined) {
+          if (tagValue > tagVs.tagValue) {
+            updateDoc(userRef, {
+              ownedTags: arrayRemove(tagVs),
+            });
+            updateDoc(userRef, {
+              ownedTags: arrayUnion({
+                tagField: selectedTags,
+                tagValue: tagValue,
+                approved: true,
+              }),
+            });
+          }
+        } else {
+          updateDoc(userRef, {
+            ownedTags: arrayUnion({
+              tagField: tags,
+              tagValue: tagValue,
+              approved: true,
+            }),
+          });
+        }
+        navigation.navigate("ProcessTag");
+      });
+    }
   };
 
   const getTags = () => {
@@ -142,7 +189,6 @@ const WorkTagScreen = ({ navigation }) => {
         setItems={setOrgItems}
         maxHeight={80}
       />
-
       <View style={{ zIndex: -0.5 }}>
         <Text>Position</Text>
         <DropDownPicker
@@ -184,21 +230,13 @@ const WorkTagScreen = ({ navigation }) => {
           setOpen={setTagOpen}
           setValue={setSelectedTags}
           setItems={setTags}
-          multiple={true}
-          min={1}
-          max={5}
           maxHeight={80}
         />
       </View>
 
-      <View style={styles.inputContainer}>
-        <TextInput
-          placeholder="URL"
-          value={url}
-          onChangeText={(text) => setUrl(text)}
-          style={styles.input}
-        />
-      </View>
+      <TouchableOpacity onPress={handleCreate} style={[styles.tagbutton]}>
+        <Text style={styles.buttonText}>Create Tag</Text>
+      </TouchableOpacity>
     </SafeAreaView>
   );
 };
@@ -209,6 +247,7 @@ const styles = StyleSheet.create({
   inputContainer: {
     padding: 20,
     marginTop: 20,
+    width: "80%",
   },
   dropdown: {
     padding: 15,
@@ -228,22 +267,11 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     fontSize: 16,
   },
-  upload: {
-    backgroundColor: "lightgrey",
-    alignSelf: "center",
-    padding: 5,
-    borderRadius: 10,
-    marginBottom: 20,
-    zIndex: -3,
-  },
   input: {
     backgroundColor: "white",
     paddingHorizontal: 15,
     paddingVertical: 10,
     borderRadius: 10,
     marginTop: 5,
-  },
-  inputContainer: {
-    width: "80%",
   },
 });

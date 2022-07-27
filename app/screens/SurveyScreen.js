@@ -70,7 +70,7 @@ const SurveyScreen = ({ navigation }) => {
       qSnap.then((q) => {
         // to display, survey must not be both in bookmarked and submitted set as true
         // not bookmarked AND not submitted
-        console.log(q.docs.length);
+        console.log(q.docs[0]);
         if (q.docs.length == 0) {
           list.push({
             id: survey.id,
@@ -97,7 +97,7 @@ const SurveyScreen = ({ navigation }) => {
       });
     });
     const delay = async (ms) => new Promise((res) => setTimeout(res, ms));
-    await delay(2000);
+    await delay(5000);
     setSurveyItems(list);
     setLoaded(true);
   };
@@ -128,24 +128,10 @@ const SurveyScreen = ({ navigation }) => {
       })
     );
     const delay = async (ms) => new Promise((res) => setTimeout(res, ms));
-    await delay(2000);
+    await delay(5000);
     setBookmarkedItems(list);
     setBookLoaded(true);
-    // bookmarkSnapshot.docs.map((d) => {
-
-    //       list.push({
-    //         bsid: x.data().bsid,
-    //       });
-    //     });
-    //     setBookmarkedItems(list);
-    //     setBookLoaded(true);
-    //   })
-    //   .catch((e) => alert(e.message));
   };
-
-  // const getBookmarkedSurveys=()=>{
-
-  // }
 
   const onSelectSwitch = (value) => {
     setCurrentTab(value);

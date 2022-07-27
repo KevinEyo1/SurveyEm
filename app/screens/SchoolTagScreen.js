@@ -25,11 +25,8 @@ import {
   arrayUnion,
   arrayRemove,
 } from "firebase/firestore";
-import { linear } from "react-native/Libraries/Animated/Easing";
-import { async } from "@firebase/util";
 
 const SchoolTagScreen = ({ navigation }) => {
-  const [link, setLink] = useState("");
   const [tagValue, setTagValue] = useState(0);
 
   const [yearOpen, setYearOpen] = useState(false);
@@ -110,14 +107,12 @@ const SchoolTagScreen = ({ navigation }) => {
   }, []);
 
   const handleCreate = async () => {
-    // check tinyurl accurate
     if (
       yearValue == null ||
       eduValue == null ||
       majorValue == null ||
       selectedSchools == "" ||
-      selectedTags == "" ||
-      link == ""
+      selectedTags == ""
     ) {
       Alert.alert("Missing Fields.");
     } else {
@@ -131,23 +126,18 @@ const SchoolTagScreen = ({ navigation }) => {
           year: yearValue,
           major: majorValue,
           edu: eduValue,
-          link: link,
           approved: true,
         }),
       });
       const userDoc = getDoc(userRef);
       userDoc.then((q) => {
-        if (q.data().ownedTags.includes(selectedTags)) {
-          const tagVs = q
-            .data()
-            .ownedTags.find((x) => x.tagField == selectedTags);
-          if (tagValue > tagVs) {
+        const tagVs = q
+          .data()
+          .ownedTags.find((x) => x.tagField == selectedTags);
+        if (tagVs != undefined) {
+          if (tagValue > tagVs.tagValue) {
             updateDoc(userRef, {
-              ownedTags: arrayRemove({
-                tagField: selectedTags,
-                tagValue: tagVs,
-                approved: true,
-              }),
+              ownedTags: arrayRemove(tagVs),
             });
             updateDoc(userRef, {
               ownedTags: arrayUnion({
@@ -248,12 +238,6 @@ const SchoolTagScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.inputContainer}>
-      <TextInput
-        style={styles.input}
-        placeholder="Enter tinyurl link to prove credentials stated below."
-        value={link}
-        onChangeText={(text) => setLink(text)}
-      />
       <DropDownPicker
         style={styles.dropdown}
         placeholder="School of Study"

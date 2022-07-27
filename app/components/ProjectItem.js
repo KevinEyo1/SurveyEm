@@ -27,21 +27,31 @@ function ProjectItem({ pid, title, tag, description, user, self }) {
         </View>
       )}
 
-      {/* self bool do diff things */}
-      <View style={styles.buttonView}>
+      {self == false && (
         <TouchableOpacity
-          style={[styles.button, styles.viewButton]}
+          style={styles.rightbutton}
           onPress={() =>
-            navigation.navigate("SingleProjectSurvey", { pid: pid, self: self })
+            navigation.navigate("ProjectComment", {
+              pid: pid,
+              self: self,
+              title: title,
+              tag: tag,
+              description: description,
+              user: user,
+            })
           }
         >
-          <Text style={styles.buttonContent}>View Surveys</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={[styles.button, styles.commentsButton]}>
           <Text style={styles.buttonContent}>View Comments</Text>
         </TouchableOpacity>
-      </View>
+      )}
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() =>
+          navigation.navigate("SingleProjectSurvey", { pid: pid, self: self })
+        }
+      >
+        <Text style={styles.buttonContent}>View Surveys</Text>
+      </TouchableOpacity>
     </SafeAreaView>
   );
 }
@@ -123,6 +133,17 @@ const styles = StyleSheet.create({
     fontFamily: "OpenSans_700Bold",
     backgroundColor: "#C7755A",
   },
+  rightbutton: {
+    padding: 6,
+    position: "absolute",
+    left: 0,
+    bottom: 0,
+    marginBottom: 15,
+    marginRight: 20,
+    borderRadius: 20,
+    fontSize: 10,
+    fontFamily: "OpenSans_700Bold",
+    backgroundColor: "#C7755A",
   viewButton: {
     marginLeft: 10,
   },

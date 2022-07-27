@@ -28,7 +28,7 @@ import {
   Timestamp,
   orderBy,
 } from "firebase/firestore";
-import { auth } from "../../firebase";
+import { auth, db } from "../../firebase";
 import { async } from "@firebase/util";
 
 const ProjectCommentScreen = ({ route, navigation }) => {
@@ -45,12 +45,11 @@ const ProjectCommentScreen = ({ route, navigation }) => {
     const list = [];
     const commentQuery = collection(db, "projects", pid, "comments");
     const commentQuerySnapshot = await getDocs(commentQuery);
-    const userRef = doc(db, "users", uid);
     commentQuerySnapshot.forEach(async (comment) => {
       const commenter = await getDoc(doc(db, "users", comment.data().userID));
       const commenterDetails = commenter
         .data()
-        .ownedTags.find((x) => x.tagField == tag);
+        .ownedTags.find((x) => x.tagField == tag && x.approved == true);
       if (commenterDetails != undefined) {
         list.push({
           username: commenter.data().username,
@@ -85,7 +84,7 @@ const ProjectCommentScreen = ({ route, navigation }) => {
   return (
     <SafeAreaView>
       <View style={styles.container}>
-        {/* display top section, user, desc, tag, title
+        {/* user, desc, tag, title
          */}
         <View style={styles.contentView}>
           <Text style={styles.title}>{title}</Text>

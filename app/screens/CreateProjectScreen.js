@@ -46,20 +46,24 @@ const CreateProjectScreen = ({ navigation }) => {
   };
 
   const handleCreatingProject = () => {
-    const user = getDoc(doc(db, "users", auth.currentUser.uid));
-    user
-      .then((q) => {
-        addDoc(collection(db, "projects"), {
-          userid: auth.currentUser.uid,
-          title: title,
-          tag: tag,
-          description: description,
-          username: q.data().username,
-        }).catch((error) => alert(error.message));
-        Alert.alert("Project created.");
-        navigation.popToTop();
-      })
-      .catch((e) => alert(e.message));
+    if (title == "" || description == "" || tag == null) {
+      Alert.alert("Missing fields.");
+    } else {
+      const user = getDoc(doc(db, "users", auth.currentUser.uid));
+      user
+        .then((q) => {
+          addDoc(collection(db, "projects"), {
+            userid: auth.currentUser.uid,
+            title: title,
+            tag: tag,
+            description: description,
+            username: q.data().username,
+          }).catch((error) => alert(error.message));
+          Alert.alert("Project created.");
+          navigation.popToTop();
+        })
+        .catch((e) => alert(e.message));
+    }
   };
 
   return (
