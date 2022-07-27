@@ -39,6 +39,7 @@ const SurveyScreen = ({ navigation }) => {
   // switch between browse and bookmark
   const [currentTab, setCurrentTab] = useState(1);
   const uid = auth.currentUser.uid;
+  const [change, setChange] = useState(false);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
@@ -47,6 +48,11 @@ const SurveyScreen = ({ navigation }) => {
     });
     return unsubscribe;
   }, [navigation]);
+
+  useEffect(() => {
+    getBookmarks();
+    getSurveys();
+  }, [currentTab]);
 
   const getSurveys = async () => {
     const list = [];

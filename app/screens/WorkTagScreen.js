@@ -10,8 +10,6 @@ import { React, useState, useEffect, useCallback } from "react";
 
 import DropDownPicker from "react-native-dropdown-picker";
 
-import * as DocumentPicker from "expo-document-picker";
-
 import { auth, db } from "../../firebase";
 import {
   getDocs,
@@ -22,8 +20,6 @@ import {
   arrayUnion,
   arrayRemove,
 } from "firebase/firestore";
-
-import { getStorage, ref, uploadBytes } from "firebase/storage";
 
 const WorkTagScreen = ({ navigation }) => {
   const [orgOpen, setOrgOpen] = useState(false);
@@ -80,7 +76,12 @@ const WorkTagScreen = ({ navigation }) => {
   }, []);
 
   const [tagValue, setTagValue] = useState(0);
-  const handleCreate = async () => {
+
+  useEffect(() => {
+    setTagValue(yearValue + posValue);
+  }, [yearValue, posValue]);
+
+  const handleCreate = () => {
     if (
       yearValue == null ||
       posValue == null ||
@@ -89,7 +90,6 @@ const WorkTagScreen = ({ navigation }) => {
     ) {
       Alert.alert("Missing Fields.");
     } else {
-      setTagValue(yearValue + posValue);
       const userRef = doc(db, "users", auth.currentUser.uid);
       updateDoc(userRef, {
         tagApplications: arrayUnion({
@@ -102,13 +102,13 @@ const WorkTagScreen = ({ navigation }) => {
         }),
       });
       const userDoc = getDoc(userRef);
-      userDoc.then((q) => {
+      userDoc.then(async (q) => {
         const tagVs = q
           .data()
           .ownedTags.find((x) => x.tagField == selectedTags);
         if (tagVs != undefined) {
           if (tagValue > tagVs.tagValue) {
-            updateDoc(userRef, {
+            await updateDoc(userRef, {
               ownedTags: arrayRemove(tagVs),
             });
             updateDoc(userRef, {
@@ -122,7 +122,7 @@ const WorkTagScreen = ({ navigation }) => {
         } else {
           updateDoc(userRef, {
             ownedTags: arrayUnion({
-              tagField: tags,
+              tagField: selectedTags,
               tagValue: tagValue,
               approved: true,
             }),
@@ -156,7 +156,6 @@ const WorkTagScreen = ({ navigation }) => {
           list.push({ label: org.data().name, value: org.data().name });
         });
         setOrgItems(list);
-        console.log(list);
       })
       .catch((e) => alert(e.message));
   };
@@ -247,7 +246,6 @@ const styles = StyleSheet.create({
   inputContainer: {
     padding: 20,
     marginTop: 20,
-    width: "80%",
   },
   dropdown: {
     padding: 15,

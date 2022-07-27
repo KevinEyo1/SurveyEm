@@ -9,11 +9,7 @@ import {
 } from "react-native";
 import { React, useState, useEffect, useCallback } from "react";
 
-import { getStorage, ref, uploadBytesResumable } from "firebase/storage";
-
 import DropDownPicker from "react-native-dropdown-picker";
-
-import * as DocumentPicker from "expo-document-picker";
 
 import { auth, db } from "../../firebase";
 import {
@@ -106,7 +102,11 @@ const SchoolTagScreen = ({ navigation }) => {
     getSchools();
   }, []);
 
-  const handleCreate = async () => {
+  useEffect(() => {
+    setTagValue(yearValue + majorValue + eduValue);
+  }, [yearValue, majorValue, eduValue]);
+
+  const handleCreate = () => {
     if (
       yearValue == null ||
       eduValue == null ||
@@ -116,7 +116,6 @@ const SchoolTagScreen = ({ navigation }) => {
     ) {
       Alert.alert("Missing Fields.");
     } else {
-      setTagValue(yearValue + majorValue + eduValue);
       const userRef = doc(db, "users", auth.currentUser.uid);
       updateDoc(userRef, {
         tagApplications: arrayUnion({
@@ -130,13 +129,13 @@ const SchoolTagScreen = ({ navigation }) => {
         }),
       });
       const userDoc = getDoc(userRef);
-      userDoc.then((q) => {
+      userDoc.then(async (q) => {
         const tagVs = q
           .data()
           .ownedTags.find((x) => x.tagField == selectedTags);
         if (tagVs != undefined) {
           if (tagValue > tagVs.tagValue) {
-            updateDoc(userRef, {
+            await updateDoc(userRef, {
               ownedTags: arrayRemove(tagVs),
             });
             updateDoc(userRef, {
@@ -150,7 +149,7 @@ const SchoolTagScreen = ({ navigation }) => {
         } else {
           updateDoc(userRef, {
             ownedTags: arrayUnion({
-              tagField: tags,
+              tagField: selectedTags,
               tagValue: tagValue,
               approved: true,
             }),
@@ -185,55 +184,6 @@ const SchoolTagScreen = ({ navigation }) => {
         setSchools(list);
       })
       .catch((e) => alert(e.message));
-  };
-
-  const [fileResponse, setFileResponse] = useState([]);
-  const pickDocument = useCallback(async () => {
-    try {
-      const response = await DocumentPicker.pick({
-        presentationStyle: "fullScreen",
-      });
-      setFileResponse(response);
-    } catch (err) {
-      console.warn(err);
-    }
-  }, []);
-  // async () => {
-  // let result = await DocumentPicker.getDocumentAsync({
-  //   type: "*/*",
-  //   copyToCacheDirectory: true,
-  // }).then((response) => {
-  //   if (response.type == "success") {
-  //     let { name, size, uri } = response;
-  //     let nameParts = name.split(".");
-  //     let fileType = nameParts[nameParts.length - 1];
-  //     var fileToUpload = {
-  //       name: name,
-  //       size: size,
-  //       uri: uri,
-  //       type: "application/" + fileType,
-  //     };
-  //     console.log(fileToUpload, "...............file");
-  //     setDoc(fileToUpload);
-  //   }
-  // });
-  // console.log(result);
-  // console.log("Doc: " + doc.uri);
-  // };
-
-  const postDocument = () => {
-    const fileUri = fileResponse.uri;
-
-    const fileExt = fileUri.split(".").pop();
-
-    console.log(fileExt);
-    var uid = uuid.v4();
-    const fileName = `${uid}.${fileExt}`;
-    const storage = getStorage();
-    const storageRef = ref(storage, `Education Certificates/${fileName}`);
-    uploadBytes(storageRef, fileUri).then((snapshot) => {
-      console.log("Uploaded a blob or file!");
-    });
   };
 
   return (
@@ -310,26 +260,6 @@ const SchoolTagScreen = ({ navigation }) => {
           maxHeight={80}
         />
       </View>
-      <SafeAreaView style={styles.container}>
-        {fileResponse.map((file, index) => (
-          <Text
-            key={index.toString()}
-            style={styles.uri}
-            numberOfLines={1}
-            ellipsizeMode={"middle"}
-          >
-            {file?.uri}
-          </Text>
-        ))}
-      </SafeAreaView>
-
-      {/* <TouchableOpacity style={styles.upload} onPress={pickDocument}>
-        <Text>Select File</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity style={styles.upload} onPress={postDocument}>
-        <Text>Upload File</Text>
-      </TouchableOpacity> */}
 
       <TouchableOpacity onPress={handleCreate} style={[styles.tagbutton]}>
         <Text style={styles.buttonText}>Create Tag</Text>

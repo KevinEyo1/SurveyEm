@@ -27,23 +27,22 @@ function ProjectItem({ pid, title, tag, description, user, self }) {
         </View>
       )}
 
-      {self == false && (
-        <TouchableOpacity
-          style={styles.rightbutton}
-          onPress={() =>
-            navigation.navigate("ProjectComment", {
-              pid: pid,
-              self: self,
-              title: title,
-              tag: tag,
-              description: description,
-              user: user,
-            })
-          }
-        >
-          <Text style={styles.buttonContent}>View Comments</Text>
-        </TouchableOpacity>
-      )}
+      <TouchableOpacity
+        style={styles.rightbutton}
+        onPress={() =>
+          navigation.navigate("ProjectComment", {
+            pid: pid,
+            self: self,
+            title: title,
+            tag: tag,
+            description: description,
+            user: user,
+          })
+        }
+      >
+        <Text style={styles.buttonContent}>View Comments</Text>
+      </TouchableOpacity>
+
       <TouchableOpacity
         style={styles.button}
         onPress={() =>
@@ -133,17 +132,6 @@ const styles = StyleSheet.create({
     fontFamily: "OpenSans_700Bold",
     backgroundColor: "#C7755A",
   },
-  rightbutton: {
-    padding: 6,
-    position: "absolute",
-    left: 0,
-    bottom: 0,
-    marginBottom: 15,
-    marginRight: 20,
-    borderRadius: 20,
-    fontSize: 10,
-    fontFamily: "OpenSans_700Bold",
-    backgroundColor: "#C7755A",
   viewButton: {
     marginLeft: 10,
   },
@@ -159,6 +147,18 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "row",
     alignItems: "baseline",
+  },
+  rightbutton: {
+    padding: 6,
+    position: "absolute",
+    left: 0,
+    bottom: 0,
+    marginBottom: 15,
+    marginRight: 20,
+    borderRadius: 20,
+    fontSize: 10,
+    fontFamily: "OpenSans_700Bold",
+    backgroundColor: "#C7755A",
   },
 });
 

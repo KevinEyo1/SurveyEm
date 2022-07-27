@@ -116,7 +116,7 @@ const ViewResponsesScreen = ({ route, navigation }) => {
 
   const endSurvey = () => {
     const surveyRef = doc(db, "surveys", sid);
-    updateDoc(surveyRef, { published: "Ended" });
+    updateDoc(surveyRef, { status: "Ended" });
     navigation.popToTop();
   };
 
