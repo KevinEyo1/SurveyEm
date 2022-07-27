@@ -5,7 +5,7 @@ function ProjectCommentItem({ user, tagField, tagValue, comment }) {
   return (
     <View style={styles.container}>
       <View style={styles.userView}>
-        <Text style={styles.user}>{user}</Text>
+        <Text style={styles.user}>Posted by: {user}</Text>
         {tagField != null && (
           <View>
             {/* insert tagfield and tagvalue */}
@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: "lightgrey",
     padding: 10,
-    alignSelf: "center",
+    // alignSelf: "center",
   },
   user: {
     fontSize: 10,

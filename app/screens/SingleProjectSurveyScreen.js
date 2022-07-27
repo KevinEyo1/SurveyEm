@@ -11,7 +11,7 @@ import {
   Alert,
 } from "react-native";
 
-import SurveyItem from "../components/SurveyItem";
+import ViewSurveyItem from "../components/ViewSurveyItem";
 
 import { onAuthStateChanged } from "firebase/auth";
 import { auth, db } from "../../firebase";
@@ -108,7 +108,7 @@ const SingleProjectSurveyScreen = ({ route, navigation }) => {
           )}
           {surveyItems.length != 0 &&
             surveyItems.map((survey) => (
-              <SurveyItem
+              <ViewSurveyItem
                 key={survey.id}
                 sid={survey.id}
                 title={survey.title}
@@ -117,7 +117,7 @@ const SingleProjectSurveyScreen = ({ route, navigation }) => {
                 coinsReward={survey.coinsReward}
                 self={self}
                 status={survey.status}
-              ></SurveyItem>
+              ></ViewSurveyItem>
             ))}
         </View>
       </ScrollView>

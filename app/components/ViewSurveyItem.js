@@ -184,6 +184,7 @@ const styles = StyleSheet.create({
     marginTop: 25,
     marginLeft: 20,
     marginBottom: 15,
+    padding: 1,
   },
 
   title: {

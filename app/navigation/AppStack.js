@@ -13,6 +13,7 @@ import LogoutScreen from "../screens/LogoutScreen";
 // import { signOut } from "firebase/auth";
 
 import TabNavigator from "./TabNavigator";
+import ProfileScreen from "../screens/ProfileScreen";
 import AuthStack from "./AuthStack";
 
 const Drawer = createDrawerNavigator();
@@ -48,6 +49,17 @@ function AppStack() {
           ),
         }}
       />
+
+      <Drawer.Screen
+        name="My Profile"
+        component={ProfileScreen}
+        options={{
+          drawerIcon: ({ color }) => (
+            <Ionicons name="log-out-outline" size={32} color={color} />
+          ),
+        }}
+      />
+
       <Drawer.Screen
         name="Add Tags"
         component={TagStack}

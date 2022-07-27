@@ -86,13 +86,13 @@ const ProjectCommentScreen = ({ route, navigation }) => {
       <View style={styles.container}>
         {/* user, desc, tag, title
          */}
+        <Text style={styles.tag}>{tag}</Text>
         <View style={styles.contentView}>
           <Text style={styles.title}>{title}</Text>
           <Text style={styles.description}>{description}</Text>
         </View>
         <View style={styles.userView}>
-          <Text style={styles.user}>{user}</Text>
-          <Text style={styles.tag}>{tag}</Text>
+          <Text style={styles.user}>Posted by: {user}</Text>
         </View>
       </View>
 
@@ -110,7 +110,7 @@ const ProjectCommentScreen = ({ route, navigation }) => {
       </View>
 
       <ScrollView style={{ padding: 10 }}>
-        <View style={styles.container}>
+        <View style={styles.commentContainer}>
           {true == true &&
             allComments.map((com) => (
               <ProjectCommentItem
@@ -149,8 +149,6 @@ const styles = StyleSheet.create({
 
   contentView: {
     alignItems: "baseline",
-    padding: 12,
-    marginTop: 25,
     marginLeft: 20,
     marginBottom: 30,
   },
@@ -191,13 +189,23 @@ const styles = StyleSheet.create({
   },
 
   user: {
-    marginLeft: 10,
+    marginLeft: 20,
   },
   tag: {
-    marginLeft: 95,
+    alignSelf: "flex-end",
+    padding: 5,
+    backgroundColor: "white",
+    borderRadius: 30,
+    marginRight: 10,
+    marginTop: 10,
+    fontFamily: "OpenSans_700Bold",
   },
   bottomContent: {
     fontSize: 16,
     fontFamily: "OpenSans_700Bold",
+  },
+  commentContainer: {
+    backgroundColor: "lightgrey",
+    width: "100%",
   },
 });
