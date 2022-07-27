@@ -142,7 +142,6 @@ const WorkTagScreen = ({ navigation }) => {
           list.push({ label: tag.data().tag, value: tag.data().tag });
         });
         setTags(list);
-        console.log(list);
       })
       .catch((e) => alert(e.message));
   };
@@ -245,7 +244,7 @@ export default WorkTagScreen;
 const styles = StyleSheet.create({
   inputContainer: {
     padding: 20,
-    marginTop: 20,
+    marginTop: 50,
   },
   dropdown: {
     padding: 15,
@@ -271,5 +270,15 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderRadius: 10,
     marginTop: 5,
+  },
+  tagbutton: {
+    backgroundColor: "#0782F9",
+    width: "90%",
+    padding: 15,
+    borderRadius: 10,
+    top: 50,
+    alignItems: "center",
+    alignSelf: "center",
+    zIndex: -3,
   },
 });

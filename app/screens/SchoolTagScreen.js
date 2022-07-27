@@ -188,9 +188,9 @@ const SchoolTagScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.inputContainer}>
+      <Text>School of Study</Text>
       <DropDownPicker
         style={styles.dropdown}
-        placeholder="School of Study"
         open={schoolOpen}
         value={selectedSchools}
         items={schools}
@@ -202,9 +202,9 @@ const SchoolTagScreen = ({ navigation }) => {
       />
 
       <View style={{ zIndex: -0.5 }}>
+        <Text>Years of Study</Text>
         <DropDownPicker
           style={styles.dropdown}
-          placeholder="Year of Study"
           open={yearOpen}
           value={yearValue}
           items={yearItems}
@@ -217,9 +217,9 @@ const SchoolTagScreen = ({ navigation }) => {
       </View>
 
       <View style={{ zIndex: -1.5 }}>
+        <Text>Major or Minor</Text>
         <DropDownPicker
           style={styles.dropdown}
-          placeholder="Major/Minor"
           open={majorOpen}
           value={majorValue}
           items={majorItems}
@@ -232,9 +232,9 @@ const SchoolTagScreen = ({ navigation }) => {
       </View>
 
       <View style={{ zIndex: -2 }}>
+        <Text>Field of Study</Text>
         <DropDownPicker
           style={styles.dropdown}
-          placeholder="Field of Study"
           open={tagOpen}
           value={selectedTags}
           items={tags}
@@ -247,9 +247,9 @@ const SchoolTagScreen = ({ navigation }) => {
       </View>
 
       <View style={{ zIndex: -3 }}>
+        <Text>Education Level</Text>
         <DropDownPicker
           style={styles.dropdown}
-          placeholder="Education Level"
           open={eduOpen}
           value={eduValue}
           items={eduItems}
@@ -300,7 +300,6 @@ const styles = StyleSheet.create({
     width: "90%",
     padding: 15,
     borderRadius: 10,
-    top: 50,
     alignItems: "center",
     alignSelf: "center",
     zIndex: -3,
@@ -309,13 +308,5 @@ const styles = StyleSheet.create({
     color: "white",
     fontWeight: "700",
     fontSize: 16,
-  },
-  upload: {
-    backgroundColor: "lightgrey",
-    alignSelf: "center",
-    padding: 5,
-    borderRadius: 10,
-    marginBottom: 20,
-    zIndex: -3,
   },
 });

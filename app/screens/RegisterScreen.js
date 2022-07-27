@@ -7,6 +7,7 @@ import {
   TextInput,
   TouchableOpacity,
   Image,
+  Alert,
 } from "react-native";
 import { useNavigation } from "@react-navigation/core";
 import DropDownPicker from "react-native-dropdown-picker";
@@ -46,22 +47,33 @@ const RegisterScreen = () => {
   }, []);
 
   const handleSignUp = () => {
-    createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredentials) => {
-        const user = userCredentials.user;
-        setDoc(doc(db, "users", userCredentials.user.uid), {
-          username: username,
-          firstName: firstName,
-          lastName: lastName,
-          occupation: occupation,
-          coins: 0,
-          ownedRewards: [],
-          ownedTags: [],
-          tagApplications: [],
-        }).catch((error) => alert(error.message));
-        console.log("Registered with: ", user.email);
-      })
-      .catch((error) => alert(error.message));
+    if (
+      email == "" ||
+      password == "" ||
+      firstName == "" ||
+      lastName == "" ||
+      username == "" ||
+      occupation == null
+    ) {
+      Alert.alert("Missing fields, please fill them in.");
+    } else {
+      createUserWithEmailAndPassword(auth, email, password)
+        .then((userCredentials) => {
+          const user = userCredentials.user;
+          setDoc(doc(db, "users", userCredentials.user.uid), {
+            username: username,
+            firstName: firstName,
+            lastName: lastName,
+            occupation: occupation,
+            coins: 0,
+            ownedRewards: [],
+            ownedTags: [],
+            tagApplications: [],
+          }).catch((error) => alert(error.message));
+          console.log("Registered with: ", user.email);
+        })
+        .catch((error) => alert(error.message));
+    }
   };
 
   const toLogin = () => {

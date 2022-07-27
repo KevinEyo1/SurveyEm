@@ -28,7 +28,6 @@ const CreateSurveyScreen = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [newSurveyRef, setNewSurveyRef] = useState(null);
-  // const [projects, setProjects] = useState([]);
   const [selectedProject, setSelectedProject] = useState(null);
   const [open, setOpen] = useState(false);
   const [items, setItems] = useState([]);
@@ -74,7 +73,6 @@ const CreateSurveyScreen = () => {
           coinsReward: 0,
           status: "Unpublished",
         }).catch((e) => alert(e.message));
-        console.log(newSurveyRef.id);
         navigation.navigate("CreateSurveyQuestions", {
           sid: newSurveyRef.id,
           first: true,

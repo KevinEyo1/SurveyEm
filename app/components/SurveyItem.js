@@ -143,12 +143,11 @@ function SurveyItem({
       {loaded != true && <Text>Loading...</Text>}
       {loaded == true && (
         <View>
+          <Text style={styles.field}>{field}</Text>
           <View style={styles.contentView}>
             <Text style={styles.title}>{title}</Text>
             <Text style={styles.description}>{description}</Text>
           </View>
-
-          <Text style={styles.field}>{field}</Text>
 
           <Text style={styles.posted}>Posted by: {user}</Text>
 

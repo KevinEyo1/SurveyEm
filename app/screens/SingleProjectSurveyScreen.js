@@ -112,7 +112,7 @@ const SingleProjectSurveyScreen = ({ route, navigation }) => {
                 key={survey.id}
                 sid={survey.id}
                 title={survey.title}
-                tag={survey.tag}
+                field={survey.tag}
                 description={survey.description}
                 coinsReward={survey.coinsReward}
                 self={self}

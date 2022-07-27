@@ -181,11 +181,11 @@ const CreateSurveyQuestionsScreen = ({ route, navigation }) => {
     const surveyRef = doc(db, "surveys", sid);
     if (data.length == 0) {
       Alert.alert(
-        'No questions in survey yet, click "Edit Survey" to add questions.'
+        'No questions in survey yet, click "Add Question" to add questions.'
       );
     } else {
       updateDoc(surveyRef, { status: "Published" });
-      Alert.alert("Survey published.");
+      Alert.alert("Survey published, no more editing allowed.");
       navigation.goBack();
     }
   };

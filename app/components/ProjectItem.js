@@ -70,15 +70,14 @@ const styles = StyleSheet.create({
 
   contentView: {
     alignItems: "baseline",
-    padding: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 5,
     marginTop: 25,
     marginLeft: 20,
     marginBottom: 30,
   },
 
   title: {
-    // padding: 30,
-    // marginTop: 5,
     fontSize: 16,
     fontFamily: "InknutAntiqua_700Bold",
   },
@@ -99,7 +98,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#6D9CCF",
   },
   postedView: {
-    marginBottom: 10,
+    padding: 5,
   },
 
   posted: {
@@ -130,6 +129,7 @@ const styles = StyleSheet.create({
     padding: 6,
     borderRadius: 20,
     fontSize: 10,
+    marginBottom: 10,
     // marginTop: 30,
     fontFamily: "OpenSans_700Bold",
     backgroundColor: "#C7755A",
