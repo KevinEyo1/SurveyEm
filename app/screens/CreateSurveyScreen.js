@@ -32,12 +32,21 @@ const CreateSurveyScreen = () => {
   const [open, setOpen] = useState(false);
   const [items, setItems] = useState([]);
   const uid = auth.currentUser.uid;
+  const [username, setUsername] = useState("");
 
   // survey status include "Unpublished", "Published", "Ended"
 
   useEffect(() => {
     getProjects();
+    getUsername();
   }, []);
+
+  const getUsername = () => {
+    const userRef = getDoc(doc(db, "users", uid));
+    userRef.then((q) => {
+      setUsername(q.data().username);
+    });
+  };
 
   const getProjects = () => {
     const list = [];
@@ -72,6 +81,7 @@ const CreateSurveyScreen = () => {
           description: description,
           coinsReward: 0,
           status: "Unpublished",
+          username: username,
         }).catch((e) => alert(e.message));
         navigation.navigate("CreateSurveyQuestions", {
           sid: newSurveyRef.id,

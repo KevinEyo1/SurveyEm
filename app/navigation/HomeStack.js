@@ -5,6 +5,7 @@ import HomeScreen from "../screens/HomeScreen";
 import SingleProjectSurveyScreen from "../screens/SingleProjectSurveyScreen";
 import CreateSurveyQuestionsScreen from "../screens/CreateSurveyQuestionsScreen";
 import ViewResponsesScreen from "../screens/ViewResponsesScreen";
+import ProjectCommentScreen from "../screens/ProjectCommentScreen";
 
 const Stack = createStackNavigator();
 
@@ -24,6 +25,7 @@ function HomeStack({ navigation }) {
         component={CreateSurveyQuestionsScreen}
       />
       <Stack.Screen name="View Responses" component={ViewResponsesScreen} />
+      <Stack.Screen name="ProjectComment" component={ProjectCommentScreen} />
     </Stack.Navigator>
   );
 }

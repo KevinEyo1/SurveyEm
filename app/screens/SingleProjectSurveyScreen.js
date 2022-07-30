@@ -39,7 +39,7 @@ const SingleProjectSurveyScreen = ({ route, navigation }) => {
     return unsubscribe;
   }, [navigation]);
 
-  const getSurveys = () => {
+  const getSurveys = async () => {
     const list = [];
     if (self) {
       const surveyQuerySnapshot = getDocs(
@@ -62,16 +62,28 @@ const SingleProjectSurveyScreen = ({ route, navigation }) => {
         })
         .catch((e) => alert(e.message));
     } else {
-      const surveyQuerySnapshot = getDocs(
+      const surveyQuerySnapshot = await getDocs(
         query(
           collection(db, "surveys"),
           where("pid", "==", pid),
           where("status", "==", "Published")
         )
       );
-      surveyQuerySnapshot
-        .then((q) => {
-          q.forEach((survey) => {
+      const bmRef = collection(
+        db,
+        "users",
+        auth.currentUser.uid,
+        "bookmarkedSurveys"
+      );
+
+      const result = surveyQuerySnapshot.docs.map((survey) => {
+        const q = query(bmRef, where("bsid", "==", survey.id));
+        const qSnap = getDocs(q);
+        qSnap.then((q) => {
+          // to display, survey must not be both in bookmarked and submitted set as true
+          // not bookmarked AND not submitted
+          console.log(q.docs[0]);
+          if (q.docs.length == 0) {
             list.push({
               id: survey.id,
               title: survey.data().title,
@@ -79,12 +91,45 @@ const SingleProjectSurveyScreen = ({ route, navigation }) => {
               description: survey.data().description,
               coinsReward: survey.data().coinsReward,
               status: survey.data().status,
+              username: survey.data().username,
             });
-          });
-          setSurveyItems(list);
-          setLoaded(true);
-        })
-        .catch((e) => alert(e.message));
+          } else if (q.docs.length != 0) {
+            q.docs.forEach((p) => {
+              if (p.data().submitted == false) {
+                list.push({
+                  id: survey.id,
+                  title: survey.data().title,
+                  tag: survey.data().tag,
+                  description: survey.data().description,
+                  coinsReward: survey.data().coinsReward,
+                  status: survey.data().status,
+                  username: survey.data().username,
+                });
+              }
+            });
+          }
+        });
+      });
+      const delay = async (ms) => new Promise((res) => setTimeout(res, ms));
+      await delay(2000);
+      setSurveyItems(list);
+      setLoaded(true);
+      // surveyQuerySnapshot
+      //   .then((q) => {
+      //     q.forEach((survey) => {
+      //       list.push({
+      //         id: survey.id,
+      //         title: survey.data().title,
+      //         tag: survey.data().tag,
+      //         description: survey.data().description,
+      //         coinsReward: survey.data().coinsReward,
+      //         status: survey.data().status,
+      //       });
+      //     });
+      //     setSurveyItems(list);
+      //     setLoaded(true);
+      //   })
+      //   .catch((e) => alert(e.message));
     }
   };
 
@@ -117,6 +162,7 @@ const SingleProjectSurveyScreen = ({ route, navigation }) => {
                 coinsReward={survey.coinsReward}
                 self={self}
                 status={survey.status}
+                user={survey.username}
               ></SurveyItem>
             ))}
         </View>

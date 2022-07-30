@@ -55,7 +55,6 @@ const SurveyScreen = ({ navigation }) => {
 
   const getSurveys = async () => {
     const list = [];
-    console.log("sqqssq");
     const surveyQuerySnapshot = await getDocs(
       query(
         collection(db, "surveys"),
@@ -84,6 +83,7 @@ const SurveyScreen = ({ navigation }) => {
             description: survey.data().description,
             coinsReward: survey.data().coinsReward,
             status: survey.data().status,
+            username: survey.data().username,
           });
         } else if (q.docs.length != 0) {
           q.docs.forEach((p) => {
@@ -95,6 +95,7 @@ const SurveyScreen = ({ navigation }) => {
                 description: survey.data().description,
                 coinsReward: survey.data().coinsReward,
                 status: survey.data().status,
+                username: survey.data().username,
               });
             }
           });
@@ -102,7 +103,7 @@ const SurveyScreen = ({ navigation }) => {
       });
     });
     const delay = async (ms) => new Promise((res) => setTimeout(res, ms));
-    await delay(5000);
+    await delay(2000);
     setSurveyItems(list);
     setLoaded(true);
   };
@@ -127,6 +128,7 @@ const SurveyScreen = ({ navigation }) => {
               description: survey.data().description,
               coinsReward: survey.data().coinsReward,
               status: survey.data().status,
+              username: survey.data().username,
             });
           }
         });
@@ -167,11 +169,12 @@ const SurveyScreen = ({ navigation }) => {
               key={survey.id}
               sid={survey.id}
               title={survey.title}
-              tag={survey.tag}
+              field={survey.tag}
               description={survey.description}
               coinsReward={survey.coinsReward}
               self={false}
               status={survey.status}
+              user={survey.username}
             ></SurveyItem>
           ))}
         {currentTab == 2 &&
@@ -182,11 +185,12 @@ const SurveyScreen = ({ navigation }) => {
               key={survey.id}
               sid={survey.id}
               title={survey.title}
-              tag={survey.tag}
+              field={survey.tag}
               description={survey.description}
               coinsReward={survey.coinsReward}
               self={false}
               status={survey.status}
+              user={survey.username}
             ></SurveyItem>
           ))}
       </ScrollView>

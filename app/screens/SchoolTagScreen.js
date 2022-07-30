@@ -302,7 +302,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: "center",
     alignSelf: "center",
-    zIndex: -3,
+    zIndex: -4,
   },
   buttonText: {
     color: "white",

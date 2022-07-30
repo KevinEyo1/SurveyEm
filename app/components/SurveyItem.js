@@ -148,8 +148,9 @@ function SurveyItem({
             <Text style={styles.title}>{title}</Text>
             <Text style={styles.description}>{description}</Text>
           </View>
-
-          <Text style={styles.posted}>Posted by: {user}</Text>
+          {self == false && (
+            <Text style={styles.posted}>Posted by: {user}</Text>
+          )}
 
           <Text style={styles.coinsReward}>{coinsReward} coins</Text>
           {/* if bookmarked then display a star icon on top right of item */}
